@@ -13,28 +13,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ab1a0f0-bcb4-47cd-8624-c7cd6cbaf717" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/node/tests/users_tests.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/down.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker/down.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/init-mysql/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/docker/init-mysql/init.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/init-nodejs/app.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/init-nodejs/controllers/users_controller.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/init-nodejs/database/mysql.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/init-nodejs/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/init-nodejs/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/init-nodejs/routes/api_backend.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/init-nodejs/utils/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/up.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker/up.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node/controllers/users_controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/node/controllers/users_controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/node/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/node/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node/routes/api_backend.js" beforeDir="false" afterPath="$PROJECT_DIR$/node/routes/api_backend.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node/utils/index.js" beforeDir="false" />
-    </list>
+    <list default="true" id="9ab1a0f0-bcb4-47cd-8624-c7cd6cbaf717" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -123,8 +102,16 @@
       <workItem from="1603459372626" duration="2461000" />
       <workItem from="1603461851384" duration="4797000" />
       <workItem from="1603466667622" duration="213000" />
-      <workItem from="1603466898323" duration="331000" />
+      <workItem from="1603466898323" duration="636000" />
     </task>
+    <task id="LOCAL-00001" summary="- Primera versión de login y registro&#10;&#10;Falta:&#10;1. BD persistente (quizás opción al lanzar up.sh)&#10;2. Framework de testing (solo pasa/no-pasa y coverage)&#10;3. Subirlo a servidor de CI y configurarlo para que ejecute los tests&#10;4. Documentar el API y comentar el código&#10;5. Desplegarlo en el servidor en el puerto 3000">
+      <created>1603467515389</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1603467515389</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -141,6 +128,10 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="- Primera versión de login y registro&#10;&#10;Falta:&#10;1. BD persistente (quizás opción al lanzar up.sh)&#10;2. Framework de testing (solo pasa/no-pasa y coverage)&#10;3. Subirlo a servidor de CI y configurarlo para que ejecute los tests&#10;4. Documentar el API y comentar el código&#10;5. Desplegarlo en el servidor en el puerto 3000" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Primera versión de login y registro&#10;&#10;Falta:&#10;1. BD persistente (quizás opción al lanzar up.sh)&#10;2. Framework de testing (solo pasa/no-pasa y coverage)&#10;3. Subirlo a servidor de CI y configurarlo para que ejecute los tests&#10;4. Documentar el API y comentar el código&#10;5. Desplegarlo en el servidor en el puerto 3000" />
   </component>
   <component name="WindowStateProjectService">
     <state x="738" y="453" width="434" height="176" key="#VCS_History_Cache_Settings" timestamp="1603466622255">
