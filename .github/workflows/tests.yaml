@@ -19,4 +19,4 @@ jobs:
           cd docker/
           sudo bash up.sh &
           sleep 60
-          sudo docker exec -it nodejs 'npm' 'test'
+          sudo docker exec nodejs 'npm' 'test'
