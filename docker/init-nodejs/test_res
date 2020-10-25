@@ -1,0 +1,43 @@
+
+> node@1.0.0 test /usr/src/app
+> nyc mocha
+
+Server listening at http://localhost:3001
+
+[0m[0m
+[0m  Successful Register[0m
+  [31m  1) should register and return 201 and the UUID[0m
+
+
+[92m [0m[32m 0 passing[0m[90m (52ms)[0m
+[31m  1 failing[0m
+
+[0m  1) Successful Register
+       should register and return 201 and the UUID:
+
+      [31mUncaught AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 201 but got 409[0m
+      [32m+ expected[0m [31m- actual[0m
+
+      [31m-409[0m
+      [32m+201[0m
+      [0m[90m
+      at /usr/src/app/test/integration_tests.js:21:37
+      at Test.Request.callback (node_modules/superagent/lib/node/index.js:716:12)
+      at /usr/src/app/node_modules/superagent/lib/node/index.js:916:18
+      at IncomingMessage.<anonymous> (node_modules/superagent/lib/node/parsers/json.js:19:7)
+      at endReadableNT (_stream_readable.js:1226:12)
+      at processTicksAndRejections (internal/process/task_queues.js:80:21)
+[0m
+
+
+^C----------------------|---------|----------|---------|---------|-------------------
+File                  | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+----------------------|---------|----------|---------|---------|-------------------
+[33;1mAll files            [0m | [33;1m  59.26[0m | [31;1m      20[0m | [33;1m     50[0m | [33;1m  59.26[0m | [31;1m                 [0m 
+[31;1m controllers         [0m | [31;1m     45[0m | [31;1m      20[0m | [33;1m     50[0m | [31;1m     45[0m | [31;1m                 [0m 
+[31;1m  users_controller.js[0m | [31;1m     45[0m | [31;1m      20[0m | [33;1m     50[0m | [31;1m     45[0m | [31;1m15-19,26-41      [0m 
+[32;1m database            [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  mysql.js           [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m routes              [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  api_backend.js     [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+----------------------|---------|----------|---------|---------|-------------------
