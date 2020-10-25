@@ -1,0 +1,22 @@
+name: Run tests
+on: [push]
+jobs:
+
+  test:
+    # Tests and code quality
+    name: test
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v1
+
+      # Set up
+      - name: Set up backend
+        uses: docker-practice/actions-setup-docker@master
+
+      # Up and test executions
+      - name: Run tests
+        run: |
+          cd docker/
+          sudo bash up.sh &
+          sleep 60
+          sudo docker exec -it nodejs 'npm' 'test'

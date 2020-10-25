@@ -12,6 +12,9 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use('', routerBackend)  // Without prefix
 
+
 app.listen(process.env.API_PORT, function () {
   console.log('Server listening at http://' + process.env.API_IP + ':' + process.env.API_PORT);
 });
+
+module.exports = app
