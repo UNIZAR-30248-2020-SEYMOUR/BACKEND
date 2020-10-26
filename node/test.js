@@ -12,8 +12,8 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use('', routerBackend)  // Without prefix
 
-var API_IP_TEST='localhost'
-var API_PORT_TEST=3001
+const API_IP_TEST = 'localhost';
+const API_PORT_TEST = 3001;
 
 app.listen(API_PORT_TEST, function () {
   console.log('Server listening at http://' + API_IP_TEST + ':' + API_PORT_TEST);

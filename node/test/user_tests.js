@@ -173,7 +173,7 @@ describe('User tests', () => {
     // LOGIN TESTS
 
     describe('Successful Login (Happy Path)', () => {
-        it('Should login and return 201 and the UUID', (done) => {
+        it('Should login and return 200 and the UUID', (done) => {
             chai.request(app)
                 .post('/users/login')
                 .send(
@@ -183,7 +183,7 @@ describe('User tests', () => {
                     }
                 )
                 .end(function(err, res) {
-                        expect(res).to.have.status(201);
+                        expect(res).to.have.status(200);
                         expect(res.body).to.have.property('UUID');
                         done();
                     }

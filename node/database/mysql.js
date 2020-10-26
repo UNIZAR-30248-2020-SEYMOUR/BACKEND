@@ -1,4 +1,4 @@
-var mysql = require('mysql');
+const mysql = require('mysql');
 
 exports.connection = mysql.createConnection({
     host: process.env.MYSQL_HOST,
