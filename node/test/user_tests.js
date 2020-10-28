@@ -226,39 +226,39 @@ describe('User tests', () => {
                 )
         });
 
+    });
 
-        // PROFILE TESTS
+    // PROFILE TESTS
 
-        describe('Successful Response With User Information (Happy/Simple Path)', () => {
-            it('Should get the user information and return 200', (done) => {
-                chai.request(app)
-                    .post('/users/login')
-                    .send(
-                        {
-                            'email': 'integration@seymour.es',
-                            'password': 'integration_password',
-                        }
-                    )
-                    .end(function(err, res) {
-                        chai.request(app)
-                            .post('/users/user_profile')
-                            .send(
-                                {
-                                    'uuid': res.body.UUID
-                                }
-                            )
-                            .end(function(err, res) {
-                                    expect(res).to.have.status(200);
-                                    expect(res.body).to.have.property('username');
-                                    expect(res.body).to.have.property('description');
-                                    expect(res.body).to.have.property('courses');
-                                done();
-                                }
-                            )
-                        done();
-                        }
-                    )
-            });
+    describe('Successful Response With User Information (Happy/Simple Path)', () => {
+        it('Should get the user information and return 200', (done) => {
+            chai.request(app)
+                .post('/users/login')
+                .send(
+                    {
+                        'email': 'integration@seymour.es',
+                        'password': 'integration_password',
+                    }
+                )
+                .end(function(err, res) {
+                    chai.request(app)
+                        .post('/users/user_profile')
+                        .send(
+                            {
+                                'uuid': res.body.UUID
+                            }
+                        )
+                        .end(function(err, res) {
+                                expect(res).to.have.status(200);
+                                expect(res.body).to.have.property('username');
+                                expect(res.body).to.have.property('description');
+                                expect(res.body).to.have.property('courses');
+                            done();
+                            }
+                        )
+                    done();
+                    }
+                )
         });
     });
 
