@@ -21,7 +21,13 @@ const transporter = nodemailer.createTransport({
  */
 
 function sendEmail(mailOptions) {
-    transporter.sendMail(mailOptions, function () {});
+    transporter.sendMail(mailOptions, function () {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Emilio sent:');
+        }
+    });
 }
 
 exports.sendEmail = sendEmail;
