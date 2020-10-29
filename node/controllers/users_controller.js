@@ -1,10 +1,7 @@
 const mysql = require('../database/mysql');
 const jwt = require('jsonwebtoken');
-const mysql_query = require('../controllers/mysql_query');
 const nodemailer = require('../controllers/email_controller');
 const { v4: uuidv4 } = require('uuid');
-
-
 const RESET_PASSWORD_MASTERKEY = 'MasterKey1.'
 
 
@@ -72,7 +69,8 @@ exports.login = (req, res) => {
         (error, response_sql) => {
             if (error) {
                 res.status(500).send();
-            } else {
+            }
+            else {
                 row = response_sql[0]
                 if (row === undefined) {
                     res.status(403).send({error: 'Invalid email'});
@@ -84,7 +82,7 @@ exports.login = (req, res) => {
             }
         }
     );
-}
+};
 
 /**
  * Reset user password
@@ -104,18 +102,20 @@ exports.resetPassword = (req, res) => {
         if(error) {
             return res.status(401).send({error: 'Incorrect token or token expired'})
         }
-    })
-    mysql.connection.query(`UPDATE USERS SET resetLink = "", password = "${req.body.newPassword}" WHERE resetLink = "${req.body.token}"`,
-        (error) => {
-            if (error) {
-                res.status(500).send()
-            }
-            else {
-                res.status(200).send();
-            }
+        else {
+            mysql.connection.query(`UPDATE USERS SET resetLink = "", password = "${req.body.newPassword}" WHERE resetLink = "${req.body.token}"`,
+                (error) => {
+                    if (error) {
+                        res.status(500).send()
+                    }
+                    else {
+                        res.status(200).send();
+                    }
+                }
+            );
         }
-    );
-}
+    })
+};
 
 
 /**
@@ -131,32 +131,29 @@ exports.resetPassword = (req, res) => {
  *
  */
 exports.forgotPassword = (req, res) => {
-    console.log(req.body);
     mysql.connection.query(
-        `SELECT uuid FROM USERS WHERE email = "${req.body.email}"`,
-        (error, response_sql) => {
-            if (error, response_sql) {
+        `SELECT * FROM USERS WHERE email = "${req.body.email}"`, (error, response_sql) => {
+            if (error) {
                 res.status(500).send();
             }
             else {
                 row = response_sql[0];
                 if (row === undefined) {
                     res.status(403).send({error: 'Invalid email'});
-                } else {
+                }
+                else {
                     const token = jwt.sign({_uuid: row.uuid}, RESET_PASSWORD_MASTERKEY , {expiresIn: '30m'});
-                    var emailData = {
+                    const emailData = {
                         from: 'noreply.seymour@gmail.com',
                         to: req.body.email,
                         subject: '[SEYMOUR] Reset your password',
                         html: `<h2>Please click on given link to reset your password</h2>
                                    <p>${process.env.API_IP}/users/resetPassword/${token}</p>`
                     };
-
                     mysql.connection.query(`UPDATE USERS SET resetLink = "${token}" WHERE email = "${req.body.email}"`);
                     nodemailer.sendEmail(emailData);
                     res.status(200).send();
                 }
-
             }
         }
     );
@@ -208,7 +205,8 @@ exports.user_profile = (req, res) => {
                             let rowCourse;
                             if (error) {
                                 res.status(500).send();
-                            } else {
+                            }
+                            else {
                                 if (response_sqlCourses.length > 0) {
                                     for (let i = 0; i < response_sqlCourses.length; ++i) {
                                         rowCourse = response_sqlCourses[i];

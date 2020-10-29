@@ -6,9 +6,8 @@ const coursesController = require('../controllers/courses_controller')
 // USERS
 router.post('/users/register', usersController.register)
 router.post('/users/login', usersController.login)
-router.post('/users/forgot', usersController.forgotPassword)
-router.post('/users/resetPassword', usersController.resetPassword)
-
+router.post('/users/forgot_password', usersController.forgotPassword)
+router.post('/users/reset_password', usersController.resetPassword)
 router.post('/users/user_profile', usersController.user_profile)
 
 // COURSES
