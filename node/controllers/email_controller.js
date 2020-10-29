@@ -1,5 +1,10 @@
 var nodemailer = require('nodemailer');
 
+
+/**
+ * Initialize nodemailer (values)
+ *
+ */
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -8,6 +13,12 @@ var transporter = nodemailer.createTransport({
     }
 });
 
+/**
+ * Call nodemailer and send Emilio with
+ * given data
+ *
+ * @param mailOptions
+ */
 
 function sendEmail(mailOptions) {
     console.log("Envio mail.")

@@ -4,7 +4,9 @@ const mysql_query = require('../controllers/mysql_query');
 const nodemailer = require('../controllers/email_controller');
 const { v4: uuidv4 } = require('uuid');
 
+
 const RESET_PASSWORD_MASTERKEY = 'MasterKey1.'
+
 
 /**
  * Register a user
@@ -51,7 +53,7 @@ exports.register = (req, res) => {
  * Login in the system
  * @param  {String} req.body.email
  * @param  {String} req.body.password
- * @return {Number} 201 if OK | 403 if invalid email or password | 500 if internal server error
+ * @return {Number} 200 if OK | 403 if invalid email or password | 500 if internal server error
  * @return {JSON}
  *
  * if not OK and not internal server error:
@@ -84,9 +86,21 @@ exports.login = (req, res) => {
     );
 }
 
+/**
+ * Reset user password
+ * @param  {String} req.body.token
+ * @param  {String} req.body.newPassword
+ * @return {Number} 200 if OK | 401 if invalid token | 500 if internal server error
+ * @return {JSON}
+ *
+ * if not OK and not internal server error:
+ * {
+ *      error: description
+ * }
+ *
+ */
 exports.resetPassword = (req, res) => {
-    const {token, newPassword} = req.body;
-    jwt.verify(token, RESET_PASSWORD_MASTERKEY, function(error, decodedData) {
+    jwt.verify(req.body.token, RESET_PASSWORD_MASTERKEY, function(error, decodedData) {
         if(error) {
             return res.status(401).send({error: 'Incorrect token or token expired'})
         }
@@ -103,16 +117,29 @@ exports.resetPassword = (req, res) => {
     );
 }
 
+
+/**
+ * Request password reset
+ * @param  {String} req.body.email
+ * @return {Number} 200 if OK | 403 if invalid email | 500 if internal server error
+ * @return {JSON}
+ *
+ * if not OK and not internal server error:
+ * {
+ *      error: description
+ * }
+ *
+ */
 exports.forgotPassword = (req, res) => {
     console.log(req.body);
     mysql.connection.query(
-        `select uuid from USERS where email = "${req.body.email}"`,
+        `SELECT uuid FROM USERS WHERE email = "${req.body.email}"`,
         (error, response_sql) => {
-            if (error) {
+            if (error, response_sql) {
                 res.status(500).send();
             }
             else {
-                row = response_sql[0]
+                row = response_sql[0];
                 if (row === undefined) {
                     res.status(403).send({error: 'Invalid email'});
                 } else {
@@ -122,15 +149,81 @@ exports.forgotPassword = (req, res) => {
                         to: req.body.email,
                         subject: '[SEYMOUR] Reset your password',
                         html: `<h2>Please click on given link to reset your password</h2>
-                                <p>${process.env.API_IP}/users/resetPassword/${token}</p>`
-
+                                   <p>${process.env.API_IP}/users/resetPassword/${token}</p>`
                     };
-                    mysql.connection.query(`UPDATE USERS SET resetLink = "${token}" WHERE email = "${req.body.email}"`)
+
+                    mysql.connection.query(`UPDATE USERS SET resetLink = "${token}" WHERE email = "${req.body.email}"`);
                     nodemailer.sendEmail(emailData);
                     res.status(200).send();
                 }
+
             }
         }
     );
 };
 
+/**
+ * Get user profile info
+ * @param  {String} req.body.uuid
+ * @return {Number} 200 if OK | 404 if user does not exist | 500 if internal server error
+ * @return {JSON}
+ *
+ * if not OK and not internal server error:
+ * {
+ *      error: description
+ * }
+ *
+ else:
+ * {
+ *      username : username,
+ *      description : description,
+ *      courses [
+ *          [
+ *              coursename : coursename,
+ *              description : description
+ *          ],
+ *          ...
+ *      ]
+ * }
+ */
+exports.user_profile = (req, res) => {
+    let responseData = {};
+    mysql.connection.query(
+        `select username, description from USERS where uuid = "${req.body.uuid}"`,
+        (error, response_sqlUser) => {
+            let rowUser;
+            if (error) {
+                res.status(500).send();
+            } else {
+                rowUser = response_sqlUser[0]
+                if (rowUser === undefined) {
+                    res.status(404).send({error: 'User does not exist'});
+                } else {
+                    responseData.username = rowUser.username;
+                    responseData.description = rowUser.description;
+                    responseData.courses = [];
+                    mysql.connection.query(
+                        `select coursename, description from COURSES where owner = "${req.body.uuid}"`,
+                        (error, response_sqlCourses) => {
+                            let rowCourse;
+                            if (error) {
+                                res.status(500).send();
+                            } else {
+                                if (response_sqlCourses.length > 0) {
+                                    for (let i = 0; i < response_sqlCourses.length; ++i) {
+                                        rowCourse = response_sqlCourses[i];
+                                        let course = {};
+                                        course.coursename = rowCourse.coursename;
+                                        course.description = rowCourse.description;
+                                        responseData.courses.push(course);
+                                    }
+                                }
+                                res.status(200).send(responseData);
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    );
+};
