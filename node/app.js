@@ -4,6 +4,8 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const routerBackend = require('./routes/api_backend')
 
+
+// App configuration
 const app = express();
 
 app.use(cors({origin: '*', credentials: true,}));

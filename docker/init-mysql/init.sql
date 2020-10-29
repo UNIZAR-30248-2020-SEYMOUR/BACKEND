@@ -4,5 +4,6 @@ CREATE TABLE USERS (
   email varchar(100) NOT NULL UNIQUE,
   password varchar(256) NOT NULL,
   description varchar(255) DEFAULT NULL,
+  resetLink varchar(255) DEFAULT NULL,
   PRIMARY KEY (uuid)
 )
