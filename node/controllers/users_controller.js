@@ -174,6 +174,7 @@ exports.forgotPassword = (req, res) => {
  * {
  *      username : username,
  *      description : description,
+ *      email: email,
  *      courses [
  *          [
  *              coursename : coursename,
@@ -186,7 +187,7 @@ exports.forgotPassword = (req, res) => {
 exports.user_profile = (req, res) => {
     let responseData = {};
     mysql.connection.query(
-        `select username, description from USERS where uuid = "${req.body.uuid}"`,
+        `select username, description, email from USERS where uuid = "${req.body.uuid}"`,
         (error, response_sqlUser) => {
             let rowUser;
             if (error) {
@@ -198,6 +199,7 @@ exports.user_profile = (req, res) => {
                 } else {
                     responseData.username = rowUser.username;
                     responseData.description = rowUser.description;
+                    responseData.email = rowUser.email;
                     responseData.courses = [];
                     mysql.connection.query(
                         `select coursename, description from COURSES where owner = "${req.body.uuid}"`,

@@ -326,6 +326,7 @@ describe('User tests', () => {
                     expect(res.body).to.have.property('username');
                     expect(res.body).to.have.property('description');
                     expect(res.body).to.have.property('courses');
+                    expect(res.body).to.have.property('email');
                     expect(res.body.courses).to.have.length(1);
                     done();
                 })
