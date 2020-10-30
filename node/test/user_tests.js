@@ -315,7 +315,7 @@ describe('User tests', () => {
     describe('Successful Response With User Information (Happy Path)', () => {
         it('Should get the user information and return 200', (done) => {
             chai.request(app)
-                .post('/users/user_profile')
+                .get('/users/user_profile')
                 .send(
                     {
                         'uuid': UUID
@@ -336,7 +336,7 @@ describe('User tests', () => {
     describe('Unsuccessful Get User Information (Wrong UUID)', () => {
         it('Should not get user information and return 404', (done) => {
             chai.request(app)
-                .post('/users/user_profile')
+                .get('/users/user_profile')
                 .send(
                     {
                         'uuid': 'no_existo'
