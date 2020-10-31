@@ -5,7 +5,8 @@ const mysql = require('../database/mysql');
  * @param  {String} req.body.owner
  * @param  {String} req.body.coursename
  * @param  {String} req.body.description
- * @return {Number} 201 if OK | 403 if owner does not exist
+ * @param {String} req.body.category
+ * @return {Number} 201 if OK | 403 if owner or category does not exist
  * @return {JSON}
  *
  * if not OK:
@@ -16,21 +17,28 @@ const mysql = require('../database/mysql');
 exports.create_course = (req, res) => {
     mysql.connection.query(
         `select * from USERS where uuid = "${req.body.owner}"`, (error, response_sql) => {
-            if(response_sql[0] === undefined) {
-                res.status(403).send();
-            }
-            else {
+            if (response_sql[0] === undefined) {
+                res.status(403).send({error: 'User does not exist'});
+            } else {
                 mysql.connection.query(
-                    `insert into COURSES (coursename, description, owner) values ("${req.body.coursename}", "${req.body.description}", "${req.body.owner}")`, (error) => {
-                        if (error) {
-                            res.status(403).send();
+                    `select * from CATEGORIES where name = "${req.body.category}"`, (error, response_sql) => {
+                        if (response_sql[0] === undefined) {
+                            res.status(403).send({error: 'Caregory does not exist'});
+                        } else {
+                            mysql.connection.query(
+                                `insert into COURSES (coursename, description, category, owner) values ("${req.body.coursename}", "${req.body.description}", "${req.body.category}", "${req.body.owner}")`, (error) => {
+                                    if (error) {
+                                        res.status(403).send();
+                                    }
+                                    else {
+                                        res.status(201).send();
+                                    }
+                                }
+                            );
                         }
-                        else {
-                            res.status(201).send();
-                        }
-                });
+                    }
+                );
             }
-    });
-
-
+        }
+    );
 };

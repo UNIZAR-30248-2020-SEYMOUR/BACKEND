@@ -1,7 +1,8 @@
-const router = require("express").Router()
+const router = require("express").Router();
 
 const usersController = require('../controllers/users_controller');
-const coursesController = require('../controllers/courses_controller')
+const coursesController = require('../controllers/courses_controller');
+const categoriesController = require('../controllers/categories_controller');
 
 // USERS
 router.post('/users/register', usersController.register)
@@ -13,9 +14,7 @@ router.get('/users/user_profile', usersController.user_profile)
 // COURSES
 router.post('/courses/create_course', coursesController.create_course)
 
-
-// MODULE 3
-
-// ...
+// CATEGORIES
+router.get('/categories/get_list', categoriesController.get_list)
 
 module.exports = router
