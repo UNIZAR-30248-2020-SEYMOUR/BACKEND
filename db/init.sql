@@ -19,18 +19,19 @@ CREATE TABLE COURSES (
 
 CREATE TABLE CATEGORIES (
   name varchar(100) NOT NULL,
+  imageUrl varchar(255),
   PRIMARY KEY(name)
 );
 
-INSERT INTO CATEGORIES (name) VALUES("Marketing");
-INSERT INTO CATEGORIES (name) VALUES("Software");
-INSERT INTO CATEGORIES (name) VALUES("Hardware");
-INSERT INTO CATEGORIES (name) VALUES("Negocios");
-INSERT INTO CATEGORIES (name) VALUES("Desarrollo personal");
-INSERT INTO CATEGORIES (name) VALUES("Fotografía");
-INSERT INTO CATEGORIES (name) VALUES("Música");
-INSERT INTO CATEGORIES (name) VALUES("Literatura");
-INSERT INTO CATEGORIES (name) VALUES("Matemáticas");
-INSERT INTO CATEGORIES (name) VALUES("Biología");
-INSERT INTO CATEGORIES (name) VALUES("Medicina");
-INSERT INTO CATEGORIES (name) VALUES("Otro");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Marketing",null);
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Software",null);
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Hardware",null);
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Negocios",null);
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Desarrollo personal",null);
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Fotografía",null);
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Música",null);
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Literatura",null);
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Matemáticas",null);
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Biología",null);
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Medicina",null);
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Otro",null);
