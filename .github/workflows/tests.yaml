@@ -17,5 +17,5 @@ jobs:
       - name: Run tests
         run: |
           sudo bash up.sh &
-          sleep 60
+          sleep 45
           sudo docker exec nodejs 'npm' 'test'
