@@ -246,7 +246,8 @@ describe('User tests', () => {
                     {
                         'coursename': 'test course',
                         'description': 'this is a description for a test course',
-                        'owner': UUID
+                        'owner': UUID,
+                        'category': 'Marketing'
                     }
                 )
                 .end(function(err, res) {
@@ -264,7 +265,8 @@ describe('User tests', () => {
                     {
                         'coursename': 'LONGLONGLONGLONGLONGLONGLONGLONGLONGLONGL',
                         'description': 'this is a description for a test course',
-                        'owner': UUID
+                        'owner': UUID,
+                        'category': 'Marketing'
                     }
                 )
                 .end(function(err, res) {
@@ -282,7 +284,8 @@ describe('User tests', () => {
                     {
                         'coursename': 'test course',
                         'description': 'LONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONG',
-                        'owner': UUID
+                        'owner': UUID,
+                        'category': 'Marketing'
                     }
                 )
                 .end(function(err, res) {
@@ -300,7 +303,27 @@ describe('User tests', () => {
                     {
                         'coursename': 'test course',
                         'description': 'this is a description for a test course',
-                        'owner': 'invalid UUID'
+                        'owner': 'invalid UUID',
+                        'category': 'Marketing'
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(403);
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful Create Course: invalid category', () => {
+        it('Should NOT register the course and return 403', (done) => {
+            chai.request(app)
+                .post('/courses/create_course')
+                .send(
+                    {
+                        'coursename': 'test course',
+                        'description': 'this is a description for a test course',
+                        'owner': UUID,
+                        'category': 'i donnut exist'
                     }
                 )
                 .end(function(err, res) {

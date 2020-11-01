@@ -23,7 +23,7 @@ exports.create_course = (req, res) => {
                 mysql.connection.query(
                     `select * from CATEGORIES where name = "${req.body.category}"`, (error, response_sql) => {
                         if (response_sql[0] === undefined) {
-                            res.status(403).send({error: 'Caregory does not exist'});
+                            res.status(403).send({error: 'Category does not exist'});
                         } else {
                             mysql.connection.query(
                                 `insert into COURSES (coursename, description, category, owner) values ("${req.body.coursename}", "${req.body.description}", "${req.body.category}", "${req.body.owner}")`, (error) => {

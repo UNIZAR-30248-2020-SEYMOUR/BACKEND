@@ -112,6 +112,4 @@ dist
 # End of https://www.toptal.com/developers/gitignore/api/node
 
 .nyc_output
-docker/test.js
-docker/app.js
-docker/mysql-data
+mysql-data
