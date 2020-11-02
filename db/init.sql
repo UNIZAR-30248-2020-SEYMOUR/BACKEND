@@ -1,3 +1,5 @@
+SET NAMES 'utf8';
+
 CREATE TABLE USERS (
   uuid varchar(36) NOT NULL,
   username varchar(40) NOT NULL UNIQUE,
