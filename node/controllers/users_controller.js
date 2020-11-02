@@ -202,7 +202,7 @@ exports.user_profile = (req, res) => {
                     responseData.email = rowUser.email;
                     responseData.courses = [];
                     mysql.connection.query(
-                        `select coursename, description from COURSES where owner = "${req.body.uuid}"`,
+                        `select c.id, c.coursename, c.description, cat.name, cat.imageUrl from COURSES c, CATEGORIES cat where c.owner = "${req.body.uuid}" and c.category = cat.name`,
                         (error, response_sqlCourses) => {
                             let rowCourse;
                             if (error) {
@@ -213,8 +213,14 @@ exports.user_profile = (req, res) => {
                                     for (let i = 0; i < response_sqlCourses.length; ++i) {
                                         rowCourse = response_sqlCourses[i];
                                         let course = {};
+                                        let category = {};
+                                        course.id = rowCourse.id;
                                         course.coursename = rowCourse.coursename;
                                         course.description = rowCourse.description;
+                                        category.name = rowCourse.name;
+                                        category.imageUrl = rowCourse.imageUrl;
+                                        course.category = [];
+                                        course.category.push(category);
                                         responseData.courses.push(course);
                                     }
                                 }
