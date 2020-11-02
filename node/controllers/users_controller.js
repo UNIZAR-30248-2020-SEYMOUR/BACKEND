@@ -175,10 +175,15 @@ exports.forgotPassword = (req, res) => {
  *      username : username,
  *      description : description,
  *      email: email,
- *      courses [
+ *      courses: [
  *          [
+ *              id: id,
  *              coursename : coursename,
- *              description : description
+ *              description : description,
+ *              category: {
+ *                  name: name,
+ *                  imageUrl: url
+ *              }
  *          ],
  *          ...
  *      ]
@@ -219,8 +224,7 @@ exports.user_profile = (req, res) => {
                                         course.description = rowCourse.description;
                                         category.name = rowCourse.name;
                                         category.imageUrl = rowCourse.imageUrl;
-                                        course.category = [];
-                                        course.category.push(category);
+                                        course.category = category;
                                         responseData.courses.push(course);
                                     }
                                 }
