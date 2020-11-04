@@ -146,9 +146,9 @@ exports.forgotPassword = (req, res) => {
                     const emailData = {
                         from: 'noreply.seymour@gmail.com',
                         to: req.body.email,
-                        subject: '[SEYMOUR] Reset your password',
-                        html: `<h2>Please click on given link to reset your password</h2>
-                                   <p>http://${process.env.API_IP}/users/recover-password?token=${token}</p>`
+                        subject: '[SEYMOUR] Recupera tu contraseña',
+                        html: `<h2>Accede al siguiente link para recuperar tu contraseña</h2>
+                                   <p>http://win.danielhuici.ml/#/recover-password?token=${token}</p>`
                     };
                     mysql.connection.query(`UPDATE USERS SET resetLink = "${token}" WHERE email = "${req.body.email}"`);
                     nodemailer.sendEmail(emailData);
