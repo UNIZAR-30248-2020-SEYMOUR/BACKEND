@@ -25,15 +25,15 @@ CREATE TABLE CATEGORIES (
   PRIMARY KEY(name)
 );
 
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Marketing",assets/img/marketing.jpg);
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Software",assets/img/software.jpg);
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Hardware",assets/img/hardware.jpg);
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Negocios",assets/img/negocios.jpg);
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Desarrollo personal",assets/img/desarrolloPersonal.jpg);
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Fotografía",assets/img/fotografia.jpg);
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Música",assets/img/musica.jpg);
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Literatura",assets/img/literatura.jpg);
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Matemáticas",assets/img/matematicas.jpg);
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Biología",assets/img/biologia.jpg);
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Medicina",assets/img/medicina.jpg);
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Otro",assets/img/otro.jpg);
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Marketing","assets/img/marketing.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Software","assets/img/software.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Hardware","assets/img/hardware.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Negocios","assets/img/negocios.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Desarrollo personal","assets/img/desarrolloPersonal.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Fotografía","assets/img/fotografia.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Música","assets/img/musica.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Literatura","assets/img/literatura.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Matemáticas","assets/img/matematicas.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Biología","assets/img/biologia.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Medicina","assets/img/medicina.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Otro","assets/img/otro.jpg");
