@@ -25,15 +25,15 @@ CREATE TABLE CATEGORIES (
   PRIMARY KEY(name)
 );
 
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Marketing","assets/img/marketing.jpg");
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Software","assets/img/software.jpg");
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Hardware","assets/img/hardware.jpg");
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Negocios","assets/img/negocios.jpg");
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Desarrollo personal","assets/img/desarrolloPersonal.jpg");
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Fotografía","assets/img/fotografia.jpg");
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Música","assets/img/musica.jpg");
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Literatura","assets/img/literatura.jpg");
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Matemáticas","assets/img/matematicas.jpg");
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Biología","assets/img/biologia.jpg");
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Medicina","assets/img/medicina.jpg");
-INSERT INTO CATEGORIES (name,imageUrl) VALUES("Otro","assets/img/otro.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Marketing","assets/img/categories/marketing.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Software","assets/img/categories/software.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Hardware","assets/img/categories/hardware.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Negocios","assets/img/categories/negocios.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Desarrollo personal","assets/img/categories/desarrolloPersonal.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Fotografía","assets/img/categories/fotografia.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Música","assets/img/categories/musica.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Literatura","assets/img/categories/literatura.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Matemáticas","assets/img/categories/matematicas.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Biología","assets/img/categories/biologia.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Medicina","assets/img/categories/medicina.jpg");
+INSERT INTO CATEGORIES (name,imageUrl) VALUES("Otro","assets/img/categories/otro.jpg");
