@@ -237,3 +237,44 @@ exports.user_profile = (req, res) => {
         }
     );
 };
+
+/**
+ * Delete a user from the system
+ * @param  {String} req.body.uuid
+ * @return {Number} 204 if user was deleted | 404 if user does not exist | 500 if internal server error
+ */
+exports.delete = (req, res) => {
+    mysql.connection.query(
+        `delete from USERS where uuid = "${req.body.uuid}"`,
+        (error, response_sql) => {
+            if (error) {
+                res.status(500).send();
+            }
+            else if (response_sql.affectedRows === 1){
+                res.status(204).send();
+            }
+            else if (response_sql.affectedRows === 0){
+                res.status(404).send();
+            }
+        }
+    );
+};
+
+/**
+ * Retrieve all the users of the platform
+ * @return JSON
+ */
+exports.list = (req, res) => {
+    mysql.connection.query(
+        `select * from USERS`,
+        (error, response_sql) => {
+            if (error) {
+                res.status(500).send();
+            }
+            else {
+                res.status(200).send(response_sql);
+            }
+        }
+    );
+};
+

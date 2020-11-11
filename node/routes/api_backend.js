@@ -10,6 +10,9 @@ router.post('/users/login', usersController.login)
 router.post('/users/forgot_password', usersController.forgotPassword)
 router.post('/users/reset_password', usersController.resetPassword)
 router.post('/users/user_profile', usersController.user_profile)
+router.delete('/users/delete', usersController.delete)
+router.get('/users/list', usersController.list)
+
 
 // COURSES
 router.post('/courses/create_course', coursesController.create_course)
