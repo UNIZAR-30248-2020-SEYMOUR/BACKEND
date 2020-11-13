@@ -12,6 +12,7 @@ router.post('/users/reset_password', usersController.resetPassword)
 router.post('/users/user_profile', usersController.user_profile)
 router.delete('/users/delete', usersController.delete)
 router.get('/users/list', usersController.list)
+router.put('/users/update_profile', usersController.update_profile)
 
 
 // COURSES
