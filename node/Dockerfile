@@ -1,16 +1,9 @@
-FROM node
-
-# Create app directory
-RUN mkdir -p /home/node/app
-WORKDIR /home/node/app
-
-# Install app dependencies
-COPY package.json /home/node/app
+FROM node:carbon
 
 RUN npm install -g nodemon
-RUN npm install
-
-# Bundle app source
-COPY . /home/node/app
+WORKDIR /usr/src/app
+COPY package*.json /usr/src/app/
+RUN npm install && mv /usr/src/app/node_modules /node_modules
+COPY . /usr/src/app
 
 CMD [ "npm", "start" ]
