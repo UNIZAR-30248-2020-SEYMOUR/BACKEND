@@ -2,5 +2,7 @@ FROM node
 
 WORKDIR /home/node/app
 
-CMD [ "npm", "install" ]
+COPY package*.json ./
+RUN npm install
+
 CMD [ "npm", "start" ]
