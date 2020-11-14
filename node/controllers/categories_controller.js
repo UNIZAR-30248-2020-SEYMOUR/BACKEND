@@ -10,7 +10,7 @@ const mysql = require('../database/mysql');
  *      error: description
  * }
  *
- else:
+ * else:
  * {
  *      [
  *          {

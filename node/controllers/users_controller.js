@@ -4,26 +4,32 @@ const nodemailer = require('../controllers/email_controller');
 const { v4: uuidv4 } = require('uuid');
 const RESET_PASSWORD_MASTERKEY = 'MasterKey1.'
 
-
 /**
- * Register a user
- * @param  {String} req.body.username
- * @param  {String} req.body.email
- * @param  {String} req.body.password
- * @param  {String} req.body.description
- * @return {Number} 201 if OK | 409 if email or username exists | 500 if internal server error
- * @return {JSON}
+ * @api {post} /users/register User register
+ * @apiName User register
+ * @apiGroup User
  *
- * if not OK:
- * {
- *      error: description
- * }
+ * @apiParam {String} username Username.
+ * @apiParam {String} email E-mail.
+ * @apiParam {String} password Password.
+ * @apiParam {String} description Description.
  *
- else:
- * {
- *      UUID: uuid
- * }
+ * @apiSuccess OK User registered successfully.
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "uuid": 123456-123456-123456,
+ *     }
+ *
+ * @apiError  400 Bad user parameters.
+ * @apiError 226 Username already exists.
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 409 Not Found
+ *     {
+ *       "error": "description"
+ *     }
  */
+
 exports.register = (req, res) => {
     let uuid = uuidv4()
     mysql.connection.query(
@@ -46,23 +52,33 @@ exports.register = (req, res) => {
 };
 
 
+
 /**
- * Login in the system
- * @param  {String} req.body.email
- * @param  {String} req.body.password
- * @return {Number} 200 if OK | 403 if invalid email or password | 500 if internal server error
- * @return {JSON}
+ * @api {post} /users/login User login
+ * @apiName User login
+ * @apiGroup User
  *
- * if not OK and not internal server error:
- * {
- *      error: description
- * }
+ * @apiParam {String} email E-mail.
+ * @apiParam {String} password Password.
  *
- else:
- * {
- *      UUID: uuid
- * }
+ * @apiSuccess OK User login successful.
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "uuid": 123456-123456-123456,
+ *     }
+ *
+ * @apiError  403 Wrong e-mail or password.
+ * @apiError 500 Internal Server Error.
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 409 Not Found
+ *     {
+ *       "error": "description"
+ *     }
  */
+
+
+
 exports.login = (req, res) => {
     mysql.connection.query(
         `select password, uuid from USERS where email = "${req.body.email}"`,
@@ -103,18 +119,23 @@ exports.get_list = (req, res) => {
 };
 
 /**
- * Reset user password
- * @param  {String} req.body.token
- * @param  {String} req.body.newPassword
- * @return {Number} 200 if OK | 401 if invalid token | 500 if internal server error
- * @return {JSON}
+ * @api {post} /users/reset_password Reset user password
+ * @apiName Reset user password
+ * @apiGroup User
  *
- * if not OK and not internal server error:
- * {
- *      error: description
- * }
+ * @apiParam {String} token Token.
+ * @apiParam {String} newPassword New password.
  *
+ * @apiSuccess 200 Password changed successfully.
+ * @apiError  401 Invalid token.
+ * @apiError 500 Internal Server Error.
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 409 Not Found
+ *     {
+ *       "error": "description"
+ *     }
  */
+
 exports.reset_password = (req, res) => {
     jwt.verify(req.body.token, RESET_PASSWORD_MASTERKEY, function(error, decodedData) {
         if(error) {
@@ -137,16 +158,20 @@ exports.reset_password = (req, res) => {
 
 
 /**
- * Request password reset
- * @param  {String} req.body.email
- * @return {Number} 200 if OK | 403 if invalid email | 500 if internal server error
- * @return {JSON}
+ * @api {post} /users/forgot_password Request password reset
+ * @apiName Request password reset
+ * @apiGroup User
  *
- * if not OK and not internal server error:
- * {
- *      error: description
- * }
+ * @apiParam {String} email E-mail.
  *
+ * @apiSuccess 200 E-mail sent.
+ * @apiError  403 Invalid e-mail.
+ * @apiError 500 Internal Server Error.
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 409 Not Found
+ *     {
+ *       "error": "description"
+ *     }
  */
 exports.forgot_password = (req, res) => {
     mysql.connection.query(
@@ -178,34 +203,37 @@ exports.forgot_password = (req, res) => {
 };
 
 /**
- * Get user profile info
- * @param  {String} req.body.uuid
- * @return {Number} 200 if OK | 404 if user does not exist | 500 if internal server error
- * @return {JSON}
+ * @api {post} /users/user_profile Get user profile info
+ * @apiName Get user profile info
+ * @apiGroup User
  *
- * if not OK and not internal server error:
- * {
- *      error: description
- * }
+ * @apiParam {String} uuid UUID.
  *
- else:
- * {
- *      username : username,
- *      description : description,
- *      email: email,
- *      courses: [
- *          [
- *              id: id,
- *              coursename : coursename,
- *              description : description,
- *              category: {
- *                  name: name,
- *                  imageUrl: url
- *              }
- *          ],
- *          ...
- *      ]
- * }
+ * @apiSuccess 200 OK.
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "username": "Juan",
+ *       "description": "My profile description",
+ *       "email":"juan@gmail.com",
+ *       "courses": [{
+ *           "id", "1",
+ *           "coursename":"My course",
+ *           "description":"This is my first course",
+ *           "category" : {
+ *               "name" : "Science",
+ *               "imageUrl" : "example.com/science.jpg"
+ *               }
+ *           }
+ *       }]
+ *     }
+ * @apiError  404 User does not exists.
+ * @apiError 500 Internal Server Error.
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 409 Not Found
+ *     {
+ *       "error": "description"
+ *     }
  */
 exports.user_profile = (req, res) => {
     let responseData = {};
@@ -257,9 +285,20 @@ exports.user_profile = (req, res) => {
 };
 
 /**
- * Delete a user from the system
- * @param  {String} req.body.uuid
- * @return {Number} 204 if user was deleted | 404 if user does not exist | 500 if internal server error
+ * @api {post} /users/delete Delete user
+ * @apiName Delete user
+ * @apiGroup User
+ *
+ * @apiParam {String} uuid UUID.
+ *
+ * @apiSuccess 200 OK.
+ * @apiError  404 User does not exists.
+ * @apiError 500 Internal Server Error.
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 409 Not Found
+ *     {
+ *       "error": "description"
+ *     }
  */
 exports.delete = (req, res) => {
     mysql.connection.query(
@@ -279,28 +318,33 @@ exports.delete = (req, res) => {
 };
 
 /**
- * Update the information of an user
- * @param  {String} req.body.uuid
- * @param  {String} req.body.name
- * @param {String} req.body.email
- * @param  {String} req.body.description
- * @return {Number} 200 if OK | 404 if uuid is invalid | 409 if email or name already exists | 500 if internal server error
- * @return {JSON}
+ * @api {post} /users/update_profile Update user profile info
+ * @apiName Update user profile info
+ * @apiGroup User
  *
- * if not OK and not internal server error:
- * {
- *      error: description
- * }
+ * @apiParam {String} uuid UUID.
+ * @apiParam {String} username Username.
+ * @apiParam {String} email E-mail.
+ * @apiParam {String} description User description.
  *
- else:
- * {
- *   uuid: uuid,
- *   username: username,
- *   email: email,
- *   password: password,
- *   description: description,
- *   resetLink: resetLink
- * }
+ * @apiSuccess 200 OK.
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "uuid": "123456-123456-123456",
+ *       "username": "Juan",
+ *       "description": "My profile description",
+ *       "email":"juan@gmail.com",
+ *       "password: mypassword123"
+ *       "resetlink" : "3289uuc3298j89h32n9cedumelon328rmiobgreg43h5643twefwt3regjrio"
+ *     }
+ * @apiError  404 User does not exists.
+ * @apiError 500 Internal Server Error.
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 409 Not Found
+ *     {
+ *       "error": "description"
+ *     }
  */
 exports.update_profile = (req, res) => {
     mysql.connection.query(

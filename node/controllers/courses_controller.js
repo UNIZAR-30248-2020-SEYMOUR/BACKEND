@@ -1,18 +1,24 @@
 const mysql = require('../database/mysql');
 
+
 /**
- * Create a course
- * @param  {String} req.body.owner
- * @param  {String} req.body.coursename
- * @param  {String} req.body.description
- * @param  {String} req.body.category
- * @return {Number} 201 if OK | 403 if owner or category does not exist
- * @return {JSON}
+ * @api {post} /courses/create_course Create a course
+ * @apiName Create a course
+ * @apiGroup Course
  *
- * if not OK:
- * {
- *      error: description
- * }
+ * @apiParam {String} owner UUID of user creator.
+ * @apiParam {String} coursename Course name.
+ * @apiParam {String} description Course description.
+ * @apiParam {String} category Course category.
+ *
+ * @apiSuccess 200 OK.
+ * @apiError  403 Owner or category does not exists
+ * @apiError 500 Internal Server Error.
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 409 Not Found
+ *     {
+ *       "error": "description"
+ *     }
  */
 exports.create_course = (req, res) => {
     mysql.connection.query(
@@ -43,11 +49,7 @@ exports.create_course = (req, res) => {
     );
 };
 
-/**
- * Retrieve all the courses of the platform
- * @return JSON
- */
-exports.get_list = (req, res) => {
+get_list = (req, res) => {
     mysql.connection.query(
         `select * from COURSES`,
         (error, response_sql) => {
@@ -61,10 +63,23 @@ exports.get_list = (req, res) => {
     );
 };
 
+
+
 /**
- * Delete a course from the system
- * @param  {String} req.body.id
- * @return {Number} 204 if course was deleted | 404 if course does not exist | 500 if internal server error
+ * @api {post} /courses/delete Delete a course
+ * @apiName Delete a course
+ * @apiGroup Course
+ *
+ * @apiParam {String} coursename Course id.
+
+ * @apiSuccess 204 Course deleted.
+ * @apiError  404 Course does not exists
+ * @apiError 500 Internal Server Error.
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 409 Not Found
+ *     {
+ *       "error": "description"
+ *     }
  */
 exports.delete = (req, res) => {
     mysql.connection.query(
@@ -84,27 +99,23 @@ exports.delete = (req, res) => {
 };
 
 /**
- * Update the information of a course
- * @param  {String} req.body.id
- * @param  {String} req.body.coursename
- * @param  {String} req.body.description
- * @param  {String} req.body.category
- * @return {Number} 200 if OK | 403 if id or category does not exist | 500 if internal server error
- * @return {JSON}
+ * @api {post} /courses/update_course Update course info
+ * @apiName Update course info
+ * @apiGroup Course
  *
- * if not OK and not internal server error:
- * {
- *      error: description
- * }
- *
- else:
- * {
- *   id: id,
- *   coursename: coursename,
- *   description: description,
- *   category: category,
- *   owner: owner
- * }
+ * @apiParam {String} id Course id.
+ * @apiParam {String} coursename Course name.
+ * @apiParam {String} description Course description.
+ * @apiParam {String} Category Course category.
+
+ * @apiSuccess 200 Course modified.
+ * @apiError  403 Course id or category not exists
+ * @apiError 500 Internal Server Error.
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 409 Not Found
+ *     {
+ *       "error": "description"
+ *     }
  */
 exports.update_course = (req, res) => {
     mysql.connection.query(
