@@ -88,7 +88,7 @@ exports.login = (req, res) => {
  * Retrieve all the users of the platform
  * @return JSON
  */
-exports.list = (req, res) => {
+exports.get_list = (req, res) => {
     mysql.connection.query(
         `select * from USERS`,
         (error, response_sql) => {
@@ -115,7 +115,7 @@ exports.list = (req, res) => {
  * }
  *
  */
-exports.resetPassword = (req, res) => {
+exports.reset_password = (req, res) => {
     jwt.verify(req.body.token, RESET_PASSWORD_MASTERKEY, function(error, decodedData) {
         if(error) {
             return res.status(401).send({error: 'Incorrect token or token expired'})
@@ -148,7 +148,7 @@ exports.resetPassword = (req, res) => {
  * }
  *
  */
-exports.forgotPassword = (req, res) => {
+exports.forgot_password = (req, res) => {
     mysql.connection.query(
         `SELECT * FROM USERS WHERE email = "${req.body.email}"`, (error, response_sql) => {
             if (error) {
@@ -316,7 +316,7 @@ exports.update_profile = (req, res) => {
                 } else {
                     mysql.connection.query(
                         `UPDATE USERS SET username = "${req.body.name}", description = "${req.body.description}", email = "${req.body.email}" WHERE uuid = "${req.body.uuid}"`,
-                        (error,response) => {
+                        (error) => {
                             if (error) {
                                 if (error.code === 'ER_DUP_ENTRY') {
                                     res.status(409).send({error: error.sqlMessage});
