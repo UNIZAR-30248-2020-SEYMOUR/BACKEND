@@ -17,6 +17,9 @@ router.put('/users/update_profile', usersController.update_profile)
 
 // COURSES
 router.post('/courses/create_course', coursesController.create_course)
+router.delete('/courses/delete', coursesController.delete)
+router.delete('/courses/delete', coursesController.update_course)
+
 
 // CATEGORIES
 router.get('/categories/get_list', categoriesController.get_list)

@@ -42,3 +42,90 @@ exports.create_course = (req, res) => {
         }
     );
 };
+
+/**
+ * Delete a course from the system
+ * @param  {String} req.body.id
+ * @return {Number} 204 if course was deleted | 404 if course does not exist | 500 if internal server error
+ */
+exports.delete = (req, res) => {
+    mysql.connection.query(
+        `delete from COURSES where id = "${req.body.id}"`,
+        (error, response_sql) => {
+            if (error) {
+                res.status(500).send();
+            }
+            else if (response_sql.affectedRows === 1){
+                res.status(204).send();
+            }
+            else if (response_sql.affectedRows === 0){
+                res.status(404).send();
+            }
+        }
+    );
+};
+
+/**
+ * Update the information of a course
+ * @param  {String} req.body.id
+ * @param  {String} req.body.coursename
+ * @param {String} req.body.description
+ * @param  {String} req.body.category
+ * @return {Number} 200 if OK | 404 if id is invalid | 500 if internal server error
+ * @return {JSON}
+ *
+ * if not OK and not internal server error:
+ * {
+ *      error: description
+ * }
+ *
+ else:
+ * {
+ *   id: uuid,
+ *   coursename: coursename,
+ *   description: description,
+ *   category: category,
+ * }
+ */
+exports.update_course = (req, res) => {
+    mysql.connection.query(
+        `select * from USERS where uuid = "${req.body.uuid}"`,
+        (error, response_sqlUser) => {
+            let rowUser;
+            if (error) {
+                res.status(500).send();
+            } else {
+                rowUser = response_sqlUser[0]
+                if (rowUser === undefined) {
+                    res.status(404).send({error: 'User does not exist'});
+                } else {
+                    mysql.connection.query(
+                        `UPDATE USERS SET username = "${req.body.name}", description = "${req.body.description}", email = "${req.body.email}" WHERE uuid = "${req.body.uuid}"`,
+                        (error,response) => {
+                            if (error) {
+                                if (error.code === 'ER_DUP_ENTRY') {
+                                    res.status(409).send({error: error.sqlMessage});
+                                }
+                                else {
+                                    res.status(500).send()
+                                }
+                            }
+                            else {
+                                mysql.connection.query(
+                                    `select * from USERS where uuid = "${req.body.uuid}"`,
+                                    (error, response_sqlUser) => {
+                                        if (error) {
+                                            res.status(500).send();
+                                        } else {
+                                            res.status(200).send(response_sqlUser[0]);
+                                        }
+                                    }
+                                );
+                            }
+                        }
+                    );
+                }
+            }
+        }
+    );
+}

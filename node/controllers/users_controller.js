@@ -85,6 +85,24 @@ exports.login = (req, res) => {
 };
 
 /**
+ * Retrieve all the users of the platform
+ * @return JSON
+ */
+exports.list = (req, res) => {
+    mysql.connection.query(
+        `select * from USERS`,
+        (error, response_sql) => {
+            if (error) {
+                res.status(500).send();
+            }
+            else {
+                res.status(200).send(response_sql);
+            }
+        }
+    );
+};
+
+/**
  * Reset user password
  * @param  {String} req.body.token
  * @param  {String} req.body.newPassword
@@ -255,24 +273,6 @@ exports.delete = (req, res) => {
             }
             else if (response_sql.affectedRows === 0){
                 res.status(404).send();
-            }
-        }
-    );
-};
-
-/**
- * Retrieve all the users of the platform
- * @return JSON
- */
-exports.list = (req, res) => {
-    mysql.connection.query(
-        `select * from USERS`,
-        (error, response_sql) => {
-            if (error) {
-                res.status(500).send();
-            }
-            else {
-                res.status(200).send(response_sql);
             }
         }
     );
