@@ -49,7 +49,7 @@ exports.create_course = (req, res) => {
     );
 };
 
-get_list = (req, res) => {
+exports.get_list = (req, res) => {
     mysql.connection.query(
         `select * from COURSES`,
         (error, response_sql) => {
