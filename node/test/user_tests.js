@@ -707,6 +707,38 @@ describe('Unit testing', () => {
         });
     });
 
+    describe('Successful Delete User', () => {
+        it('Should Delete the user and return 204', (done) => {
+            chai.request(app)
+                .delete('/users/delete')
+                .send(
+                    {
+                        'uuid': UUID
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(204);
+                    done();
+                })
+        });
+    });
+
+    describe('Unsuccessful Delete User (User does not exists)', () => {
+        it('Should not delete the user and return 404', (done) => {
+            chai.request(app)
+                .delete('/users/delete')
+                .send(
+                    {
+                        'uuid': 'no_existo'
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(404);
+                    done();
+                })
+        });
+    });
+
     after(function(){
         process.exit(0)
     })
