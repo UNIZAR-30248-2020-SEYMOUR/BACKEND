@@ -373,6 +373,197 @@ describe('User tests', () => {
         })
     });
 
+    describe('Successful Update User Information (Happy path)', () => {
+        it('Should update user information and return 200', (done) => {
+            chai.request(app)
+                .post('/users/update_profile')
+                .send(
+                    {
+                        'uuid': UUID,
+                        'username': 'integration_user_mod',
+                        'email': 'integration_mod@seymour.es',
+                        'password': 'integration_password_mod',
+                        'description': 'integration_description_mod'
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.property('username','integration_user_mod');
+                    expect(res.body).to.have.property('email', 'integration_mod@seymour.es');
+                    expect(res.body).to.have.property('password','integration_password_mod');
+                    expect(res.body).to.have.property('description', 'integration_description_mod');
+                    expect(res.body.courses).to.have.length(1);
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful Update User Information (Wrong UUID)', () => {
+        it('Should not get user information and return 404', (done) => {
+            chai.request(app)
+                .post('/users/update_profile')
+                .send(
+                    {
+                        'uuid': 'no_existo',
+                        'username': 'integration_user_mod',
+                        'email': 'integration_mod@seymour.es',
+                        'password': 'integration_password_mod',
+                        'description': 'integration_description_mod'
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(404);
+                    expect(res.body).to.have.property('error');
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful Update User Information (Wrong UUID)', () => {
+        it('Should not get update information and return 404', (done) => {
+            chai.request(app)
+                .post('/users/update_profile')
+                .send(
+                    {
+                        'uuid': 'no_existo',
+                        'username': 'integration_user_mod',
+                        'email': 'integration_mod@seymour.es',
+                        'password': 'integration_password_mod',
+                        'description': 'integration_description_mod'
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(404);
+                    expect(res.body).to.have.property('error');
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful Update User Information (E-mail already exists)', () => {
+        it('Should not update user information and return 409', (done) => {
+            chai.request(app)
+                .post('/users/update_profile')
+                .send(
+                    {
+                        'uuid': 'no_existo',
+                        'username': 'integration_user_mod',
+                        'email': 'integration@seymour.es',
+                        'password': 'integration_password_mod',
+                        'description': 'integration_description_mod'
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(404);
+                    expect(res.body).to.have.property('error');
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful Update User Information (Username already exists)', () => {
+        it('Should not update user information and return 409', (done) => {
+            chai.request(app)
+                .post('/users/update_profile')
+                .send(
+                    {
+                        'uuid': 'no_existo',
+                        'username': 'integration_user_mod',
+                        'email': 'integration@seymour.es',
+                        'password': 'integration_password_mod',
+                        'description': 'integration_description_mod'
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(404);
+                    expect(res.body).to.have.property('error');
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful Update User Information (Invalid username)', () => {
+        it('Should not update user information and return 500', (done) => {
+            chai.request(app)
+                .post('/users/update_profile')
+                .send(
+                    {
+                        'username': 'LONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONG',
+                        'email': 'integration3@seymour.es',
+                        'password': 'integration_password',
+                        'description': 'integration_description'
+                    }
+                )
+                .end(function(err, res) {
+                        expect(res).to.have.status(500);
+                        done();
+                    }
+                )
+        });
+    });
+
+    describe('Unsuccessful Update User Information (Invalid email)', () => {
+        it('Should not update user information and return 500', (done) => {
+            chai.request(app)
+                .post('/users/update_profile')
+                .send(
+                    {
+                        'username': 'integration_user3',
+                        'email': 'LONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONG',
+                        'password': 'integration_password',
+                        'description': 'integration_description'
+                    }
+                )
+                .end(function(err, res) {
+                        expect(res).to.have.status(500);
+                        done();
+                    }
+                )
+        });
+    });
+
+    describe('Unsuccessful Update User Information (Invalid password)', () => {
+        it('Should not update user information and return 500', (done) => {
+            chai.request(app)
+                .post('/users/update_profile')
+                .send(
+                    {
+                        'username': 'integration_user3',
+                        'email': 'integration3@seymour.es',
+                        'password': 'LONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONG',
+                        'description': 'integration_description'
+                    }
+                )
+                .end(function(err, res) {
+                        expect(res).to.have.status(500);
+                        done();
+                    }
+                )
+        });
+    });
+
+    describe('Unsuccessful Update User Information (Invalid description)', () => {
+        it('Should not update user information and return 500', (done) => {
+            chai.request(app)
+                .post('/users/update_profile')
+                .send(
+                    {
+                        'username': 'integration_user3',
+                        'email': 'integration3@seymour.es',
+                        'password': 'integration_mod',
+                        'description': 'LONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONG',
+
+                    }
+                )
+                .end(function(err, res) {
+                        expect(res).to.have.status(500);
+                        done();
+                    }
+                )
+        });
+    });
+
+
     // PASSWORD TESTS
 
     describe('Successful forgot password (Happy Path)', () => {
