@@ -5,7 +5,7 @@ const mysql = require('../database/mysql');
  * @param  {String} req.body.owner
  * @param  {String} req.body.coursename
  * @param  {String} req.body.description
- * @param {String} req.body.category
+ * @param  {String} req.body.category
  * @return {Number} 201 if OK | 403 if owner or category does not exist
  * @return {JSON}
  *
@@ -89,7 +89,7 @@ exports.delete = (req, res) => {
  * @param  {String} req.body.coursename
  * @param  {String} req.body.description
  * @param  {String} req.body.category
- * @return {Number} 200 if OK | 404 if id is invalid | 500 if internal server error
+ * @return {Number} 200 if OK | 403 if id or category does not exist | 500 if internal server error
  * @return {JSON}
  *
  * if not OK and not internal server error:
@@ -113,25 +113,35 @@ exports.update_course = (req, res) => {
             let rowCourse;
             if (error) {
                 res.status(500).send();
-            } else {
+            }
+            else {
                 rowCourse = response_sqlCourse[0]
                 if (rowCourse === undefined) {
-                    res.status(404).send({error: 'Course does not exist'});
-                } else {
+                    res.status(403).send({error: 'Course does not exist'});
+                }
+                else {
                     mysql.connection.query(
-                        `UPDATE COURSES SET coursename = "${req.body.coursename}", description = "${req.body.description}", category = "${req.body.category}" WHERE id = "${req.body.id}"`,
-                        (error) => {
-                            if (error) {
-                                res.status(500).send()
+                        `select * from CATEGORIES where name = "${req.body.category}"`, (error, response_sql) => {
+                            if (response_sql[0] === undefined) {
+                                res.status(403).send({error: 'Category does not exist'});
                             }
                             else {
                                 mysql.connection.query(
-                                    `select * from COURSES where id = "${req.body.id}"`,
-                                    (error, response_sqlCourse) => {
+                                    `UPDATE COURSES SET coursename = "${req.body.coursename}", description = "${req.body.description}", category = "${req.body.category}" WHERE id = "${req.body.id}"`,
+                                    (error, response) => {
                                         if (error) {
-                                            res.status(500).send();
+                                            res.status(500).send()
                                         } else {
-                                            res.status(200).send(response_sqlCourse[0]);
+                                            mysql.connection.query(
+                                                `select * from COURSES where id = "${req.body.id}"`,
+                                                (error, response_sqlCourse) => {
+                                                    if (error) {
+                                                        res.status(500).send();
+                                                    } else {
+                                                        res.status(200).send(response_sqlCourse[0]);
+                                                    }
+                                                }
+                                            );
                                         }
                                     }
                                 );

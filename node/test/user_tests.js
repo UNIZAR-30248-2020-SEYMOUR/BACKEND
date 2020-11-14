@@ -5,9 +5,7 @@ let app = require('../test');
 
 chai.use(chaiHttp);
 
-describe('User tests', () => {
-
-    // REGISTER TESTS
+describe('Unit testing', () => {
 
     describe('Successful Register (Happy Path)', () => {
         it('Should register and return 201 and the UUID', (done) => {
@@ -171,8 +169,6 @@ describe('User tests', () => {
                 )
         });
     });
-
-    // LOGIN TESTS
 
     let UUID = undefined;
 
@@ -617,8 +613,99 @@ describe('User tests', () => {
         })
     });
 
+    describe('Successful Update Course', () => {
+        it('Should update the course and return 200 and the new course information', (done) => {
+            chai.request(app)
+                .put('/courses/update_course')
+                .send(
+                    {
+                        'id': 1,
+                        'coursename': 'testCourse',
+                        'description': 'this is just a course for testing',
+                        'category': 'Software',
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.property('id');
+                    expect(res.body).to.have.property('coursename');
+                    expect(res.body).to.have.property('description');
+                    expect(res.body).to.have.property('category');
+                    expect(res.body).to.have.property('owner');
+                    done();
+                })
+        });
+    });
 
+    describe('Unsuccessful Update Course', () => {
+        it('Should NOT update the course and return 403 because course does not exist', (done) => {
+            chai.request(app)
+                .put('/courses/update_course')
+                .send(
+                    {
+                        'id': 40,
+                        'coursename': 'testCourse1',
+                        'description': 'this is just a course for testing1',
+                        'category': 'Software',
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(403);
+                    done();
+                })
+        });
+    });
 
+    describe('Unsuccessful Update Course', () => {
+        it('Should NOT update the course and return 403 because category does not exist', (done) => {
+            chai.request(app)
+                .put('/courses/update_course')
+                .send(
+                    {
+                        'id': 1,
+                        'coursename': 'testCourse2',
+                        'description': 'this is just a course for testing2',
+                        'category': 'Softwareee',
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(403);
+                    done();
+                })
+        });
+    });
+
+    describe('Successful Delete Course', () => {
+        it('Should delete the course and return 204', (done) => {
+            chai.request(app)
+                .delete('/courses/delete')
+                .send(
+                    {
+                        'id': 1
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(204);
+                    done();
+                })
+        });
+    });
+
+    describe('Unsuccessful Delete Course', () => {
+        it('Should NOT delete the course and return 404', (done) => {
+            chai.request(app)
+                .delete('/courses/delete')
+                .send(
+                    {
+                        'id': 1
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(404);
+                    done();
+                })
+        });
+    });
 
     after(function(){
         process.exit(0)
