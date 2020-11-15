@@ -71,14 +71,11 @@ exports.register = (req, res) => {
  * @apiError  403 Wrong e-mail or password.
  * @apiError 500 Internal Server Error.
  * @apiErrorExample {json} Error-Response:
- *     HTTP/1.1 409 Not Found
+ *     HTTP/1.1 403 Invalid email
  *     {
  *       "error": "description"
  *     }
  */
-
-
-
 exports.login = (req, res) => {
     mysql.connection.query(
         `select password, uuid from USERS where email = "${req.body.email}"`,
@@ -101,8 +98,12 @@ exports.login = (req, res) => {
 };
 
 /**
- * Retrieve all the users of the platform
- * @return JSON
+ * @api {post} /users/get_list Get users
+ * @apiName Get users
+ * @apiGroup User
+ *
+ * @apiSuccess OK Get users successful.
+ * @apiError 500 Internal Server Error.
  */
 exports.get_list = (req, res) => {
     mysql.connection.query(
@@ -130,7 +131,7 @@ exports.get_list = (req, res) => {
  * @apiError  401 Invalid token.
  * @apiError 500 Internal Server Error.
  * @apiErrorExample {json} Error-Response:
- *     HTTP/1.1 409 Not Found
+ *     HTTP/1.1 401 Invalid token
  *     {
  *       "error": "description"
  *     }
@@ -168,7 +169,7 @@ exports.reset_password = (req, res) => {
  * @apiError  403 Invalid e-mail.
  * @apiError 500 Internal Server Error.
  * @apiErrorExample {json} Error-Response:
- *     HTTP/1.1 409 Not Found
+ *     HTTP/1.1 403 Invalid e-mail
  *     {
  *       "error": "description"
  *     }
@@ -225,12 +226,11 @@ exports.forgot_password = (req, res) => {
  *               "imageUrl" : "example.com/science.jpg"
  *               }
  *           }
- *       }]
- *     }
+ *       }
  * @apiError  404 User does not exists.
  * @apiError 500 Internal Server Error.
  * @apiErrorExample {json} Error-Response:
- *     HTTP/1.1 409 Not Found
+ *     HTTP/1.1 404 Not Found
  *     {
  *       "error": "description"
  *     }
@@ -295,7 +295,7 @@ exports.user_profile = (req, res) => {
  * @apiError  404 User does not exists.
  * @apiError 500 Internal Server Error.
  * @apiErrorExample {json} Error-Response:
- *     HTTP/1.1 409 Not Found
+ *     HTTP/1.1 404 Not Found
  *     {
  *       "error": "description"
  *     }
@@ -341,7 +341,7 @@ exports.delete = (req, res) => {
  * @apiError  404 User does not exists.
  * @apiError 500 Internal Server Error.
  * @apiErrorExample {json} Error-Response:
- *     HTTP/1.1 409 Not Found
+ *     HTTP/1.1 404 Not Found
  *     {
  *       "error": "description"
  *     }

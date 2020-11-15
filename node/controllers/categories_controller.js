@@ -1,18 +1,15 @@
 const mysql = require('../database/mysql');
 
+
 /**
- * Get list of categories
- * @return {Number} 200 if OK | 500 if error
- * @return {JSON}
+ * @api {post} /categories/get_list Get categories
+ * @apiName Get categories
+ * @apiGroup Category
  *
- * if not OK:
- * {
- *      error: description
- * }
- *
- * else:
- * {
- *      [
+ * @apiSuccess OK Get categories successful.
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
  *          {
  *              "name" : "category"
  *          },
@@ -20,7 +17,8 @@ const mysql = require('../database/mysql');
  *              ...
  *          }
  *      ]
- * }
+ *
+ * @apiError 500 Internal Server Error.
  */
 exports.get_list = (req, res) => {
     mysql.connection.query(

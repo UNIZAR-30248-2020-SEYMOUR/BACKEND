@@ -15,7 +15,7 @@ const mysql = require('../database/mysql');
  * @apiError  403 Owner or category does not exists
  * @apiError 500 Internal Server Error.
  * @apiErrorExample {json} Error-Response:
- *     HTTP/1.1 409 Not Found
+ *     HTTP/1.1 403 Not Found
  *     {
  *       "error": "description"
  *     }
@@ -49,6 +49,14 @@ exports.create_course = (req, res) => {
     );
 };
 
+/**
+ * @api {post} /courses/get_list Get courses
+ * @apiName Get courses
+ * @apiGroup Course
+ *
+ * @apiSuccess OK Get courses successful.
+ * @apiError 500 Internal Server Error.
+ */
 exports.get_list = (req, res) => {
     mysql.connection.query(
         `select * from COURSES`,
@@ -76,7 +84,7 @@ exports.get_list = (req, res) => {
  * @apiError  404 Course does not exists
  * @apiError 500 Internal Server Error.
  * @apiErrorExample {json} Error-Response:
- *     HTTP/1.1 409 Not Found
+ *     HTTP/1.1 404 Not Found
  *     {
  *       "error": "description"
  *     }
@@ -112,7 +120,7 @@ exports.delete = (req, res) => {
  * @apiError  403 Course id or category not exists
  * @apiError 500 Internal Server Error.
  * @apiErrorExample {json} Error-Response:
- *     HTTP/1.1 409 Not Found
+ *     HTTP/1.1 403 Not Found
  *     {
  *       "error": "description"
  *     }

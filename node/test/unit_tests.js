@@ -7,6 +7,32 @@ chai.use(chaiHttp);
 
 describe('Unit testing', () => {
 
+    describe('Successful Get Users', () => {
+        it('Should get ALL the users (0) and return 200', (done) => {
+            chai.request(app)
+                .post('/users/get_list')
+                .send()
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.length(0);
+                    done();
+                })
+        })
+    });
+
+    describe('Successful Get Categories', () => {
+        it('Should get ALL the categories (12) and return 200', (done) => {
+            chai.request(app)
+                .post('/categories/get_list')
+                .send()
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.length(12);
+                    done();
+                })
+        })
+    });
+
     describe('Successful Register (Happy Path)', () => {
         it('Should register and return 201 and the UUID', (done) => {
             chai.request(app)
@@ -28,6 +54,19 @@ describe('Unit testing', () => {
         });
     });
 
+    describe('Successful Get Users', () => {
+        it('Should get ALL the users (1) and return 200', (done) => {
+            chai.request(app)
+                .post('/users/get_list')
+                .send()
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.length(1);
+                    done();
+                })
+        })
+    });
+
     describe('Successful Register (No description)', () => {
         it('Should register and return 201 and the UUID', (done) => {
             chai.request(app)
@@ -46,6 +85,19 @@ describe('Unit testing', () => {
                     }
                 )
         });
+    });
+
+    describe('Successful Get Users', () => {
+        it('Should get ALL the users (2) and return 200', (done) => {
+            chai.request(app)
+                .post('/users/get_list')
+                .send()
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.length(2);
+                    done();
+                })
+        })
     });
 
     describe('Unsuccessful Register: Invalid username', () => {
@@ -253,6 +305,19 @@ describe('Unit testing', () => {
         })
     });
 
+    describe('Successful Get Courses', () => {
+        it('Should get ALL the courses (1) and return 200', (done) => {
+            chai.request(app)
+                .post('/courses/get_list')
+                .send()
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.length(1);
+                    done();
+                })
+        })
+    });
+
     describe('Unsuccessful Create Course: invalid coursename', () => {
         it('Should NOT register the course and return 403', (done) => {
             chai.request(app)
@@ -329,8 +394,6 @@ describe('Unit testing', () => {
         })
     });
 
-    // PROFILE TESTS
-
     describe('Successful Response With User Information (Happy Path)', () => {
         it('Should get the user information and return 200', (done) => {
             chai.request(app)
@@ -372,7 +435,7 @@ describe('Unit testing', () => {
     describe('Successful Update User Information (Happy path)', () => {
         it('Should update user information and return 200', (done) => {
             chai.request(app)
-                .put('/users/update_profile')
+                .post('/users/update_profile')
                 .send(
                     {
                         'uuid': UUID,
@@ -396,7 +459,7 @@ describe('Unit testing', () => {
     describe('Unsuccessful Update User Information (Wrong UUID)', () => {
         it('Should not get user information and return 404', (done) => {
             chai.request(app)
-                .put('/users/update_profile')
+                .post('/users/update_profile')
                 .send(
                     {
                         'uuid': 'no_existo',
@@ -417,7 +480,7 @@ describe('Unit testing', () => {
     describe('Unsuccessful Update User Information (Wrong UUID)', () => {
         it('Should not get update information and return 404', (done) => {
             chai.request(app)
-                .put('/users/update_profile')
+                .post('/users/update_profile')
                 .send(
                     {
                         'uuid': 'no_existo',
@@ -438,7 +501,7 @@ describe('Unit testing', () => {
     describe('Unsuccessful Update User Information (E-mail already exists)', () => {
         it('Should not update user information and return 409', (done) => {
             chai.request(app)
-                .put('/users/update_profile')
+                .post('/users/update_profile')
                 .send(
                     {
                         'uuid': UUID,
@@ -459,7 +522,7 @@ describe('Unit testing', () => {
     describe('Unsuccessful Update User Information (Username already exists)', () => {
         it('Should not update user information and return 409', (done) => {
             chai.request(app)
-                .put('/users/update_profile')
+                .post('/users/update_profile')
                 .send(
                     {
                         'uuid': UUID,
@@ -480,7 +543,7 @@ describe('Unit testing', () => {
     describe('Unsuccessful Update User Information (Invalid username)', () => {
         it('Should not update user information and return 500', (done) => {
             chai.request(app)
-                .put('/users/update_profile')
+                .post('/users/update_profile')
                 .send(
                     {
                         'uuid' : UUID,
@@ -501,7 +564,7 @@ describe('Unit testing', () => {
     describe('Unsuccessful Update User Information (Invalid email)', () => {
         it('Should not update user information and return 500', (done) => {
             chai.request(app)
-                .put('/users/update_profile')
+                .post('/users/update_profile')
                 .send(
                     {
                         'uuid': UUID,
@@ -522,7 +585,7 @@ describe('Unit testing', () => {
     describe('Unsuccessful Update User Information (Invalid password)', () => {
         it('Should not update user information and return 500', (done) => {
             chai.request(app)
-                .put('/users/update_profile')
+                .post('/users/update_profile')
                 .send(
                     {
                         'uuid' : UUID,
@@ -543,7 +606,7 @@ describe('Unit testing', () => {
     describe('Unsuccessful Update User Information (Invalid description)', () => {
         it('Should not update user information and return 500', (done) => {
             chai.request(app)
-                .put('/users/update_profile')
+                .post('/users/update_profile')
                 .send(
                     {
                         'uuid': UUID,
@@ -616,7 +679,7 @@ describe('Unit testing', () => {
     describe('Successful Update Course', () => {
         it('Should update the course and return 200 and the new course information', (done) => {
             chai.request(app)
-                .put('/courses/update_course')
+                .post('/courses/update_course')
                 .send(
                     {
                         'id': 1,
@@ -640,7 +703,7 @@ describe('Unit testing', () => {
     describe('Unsuccessful Update Course', () => {
         it('Should NOT update the course and return 403 because course does not exist', (done) => {
             chai.request(app)
-                .put('/courses/update_course')
+                .post('/courses/update_course')
                 .send(
                     {
                         'id': 40,
@@ -659,7 +722,7 @@ describe('Unit testing', () => {
     describe('Unsuccessful Update Course', () => {
         it('Should NOT update the course and return 403 because category does not exist', (done) => {
             chai.request(app)
-                .put('/courses/update_course')
+                .post('/courses/update_course')
                 .send(
                     {
                         'id': 1,
@@ -678,7 +741,7 @@ describe('Unit testing', () => {
     describe('Successful Delete Course', () => {
         it('Should delete the course and return 204', (done) => {
             chai.request(app)
-                .delete('/courses/delete')
+                .post('/courses/delete')
                 .send(
                     {
                         'id': 1
@@ -694,7 +757,7 @@ describe('Unit testing', () => {
     describe('Unsuccessful Delete Course', () => {
         it('Should NOT delete the course and return 404', (done) => {
             chai.request(app)
-                .delete('/courses/delete')
+                .post('/courses/delete')
                 .send(
                     {
                         'id': 1
@@ -707,10 +770,23 @@ describe('Unit testing', () => {
         });
     });
 
+    describe('Successful Get Courses', () => {
+        it('Should get ALL the courses (0) and return 200', (done) => {
+            chai.request(app)
+                .post('/courses/get_list')
+                .send()
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.length(0);
+                    done();
+                })
+        })
+    });
+
     describe('Successful Delete User', () => {
         it('Should Delete the user and return 204', (done) => {
             chai.request(app)
-                .delete('/users/delete')
+                .post('/users/delete')
                 .send(
                     {
                         'uuid': UUID
@@ -726,7 +802,7 @@ describe('Unit testing', () => {
     describe('Unsuccessful Delete User (User does not exists)', () => {
         it('Should not delete the user and return 404', (done) => {
             chai.request(app)
-                .delete('/users/delete')
+                .post('/users/delete')
                 .send(
                     {
                         'uuid': 'no_existo'
@@ -738,6 +814,7 @@ describe('Unit testing', () => {
                 })
         });
     });
+
 
     after(function(){
         process.exit(0)
