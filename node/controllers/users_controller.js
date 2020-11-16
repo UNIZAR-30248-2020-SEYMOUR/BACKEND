@@ -338,7 +338,8 @@ exports.delete = (req, res) => {
  *       "password: mypassword123"
  *       "resetlink" : "3289uuc3298j89h32n9cedumelon328rmiobgreg43h5643twefwt3regjrio"
  *     }
- * @apiError  404 User does not exists.
+ * @apiError  404 User does not exist.
+ * @apiError  409 New username or email already exists.
  * @apiError 500 Internal Server Error.
  * @apiErrorExample {json} Error-Response:
  *     HTTP/1.1 404 Not Found
