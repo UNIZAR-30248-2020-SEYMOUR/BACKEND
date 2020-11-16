@@ -67,6 +67,8 @@ describe('Unit testing', () => {
         })
     });
 
+    let UUID2 = undefined;
+
     describe('Successful Register (No description)', () => {
         it('Should register and return 201 and the UUID', (done) => {
             chai.request(app)
@@ -81,6 +83,7 @@ describe('Unit testing', () => {
                 .end(function(err, res) {
                         expect(res).to.have.status(201);
                         expect(res.body).to.have.property('UUID');
+                        UUID2 = res.body.UUID;
                         done();
                     }
                 )
@@ -797,6 +800,48 @@ describe('Unit testing', () => {
                     done();
                 })
         });
+    });
+
+    describe('Successful Get Users', () => {
+        it('Should get ALL the users (1) and return 200', (done) => {
+            chai.request(app)
+                .post('/users/get_list')
+                .send()
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.length(1);
+                    done();
+                })
+        })
+    });
+
+    describe('Successful Delete User', () => {
+        it('Should Delete the user and return 204', (done) => {
+            chai.request(app)
+                .post('/users/delete')
+                .send(
+                    {
+                        'uuid': UUID2
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(204);
+                    done();
+                })
+        });
+    });
+
+    describe('Successful Get Users', () => {
+        it('Should get ALL the users (0) and return 200', (done) => {
+            chai.request(app)
+                .post('/users/get_list')
+                .send()
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.length(0);
+                    done();
+                })
+        })
     });
 
     describe('Unsuccessful Delete User (User does not exists)', () => {
