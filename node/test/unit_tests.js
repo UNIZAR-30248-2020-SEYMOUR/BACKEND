@@ -322,7 +322,7 @@ describe('Unit testing', () => {
     });
 
     describe('Unsuccessful Create Course: invalid coursename', () => {
-        it('Should NOT register the course and return 403', (done) => {
+        it('Should NOT register the course and return 500', (done) => {
             chai.request(app)
                 .post('/courses/create_course')
                 .send(
@@ -334,14 +334,14 @@ describe('Unit testing', () => {
                     }
                 )
                 .end(function(err, res) {
-                    expect(res).to.have.status(403);
+                    expect(res).to.have.status(500);
                     done();
                 })
         })
     });
 
     describe('Unsuccessful Create Course: invalid description', () => {
-        it('Should NOT register the course and return 403', (done) => {
+        it('Should NOT register the course and return 500', (done) => {
             chai.request(app)
                 .post('/courses/create_course')
                 .send(
@@ -353,7 +353,7 @@ describe('Unit testing', () => {
                     }
                 )
                 .end(function(err, res) {
-                    expect(res).to.have.status(403);
+                    expect(res).to.have.status(500);
                     done();
                 })
         })
