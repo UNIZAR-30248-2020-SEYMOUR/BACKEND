@@ -291,7 +291,7 @@ exports.user_profile = (req, res) => {
  *
  * @apiParam {String} uuid UUID.
  *
- * @apiSuccess 200 OK.
+ * @apiSuccess 204 OK.
  * @apiError  404 User does not exists.
  * @apiError 500 Internal Server Error.
  * @apiErrorExample {json} Error-Response:
