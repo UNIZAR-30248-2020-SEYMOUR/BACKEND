@@ -34,7 +34,7 @@ exports.create_course = (req, res) => {
                             mysql.connection.query(
                                 `insert into COURSES (coursename, description, category, owner) values ("${req.body.coursename}", "${req.body.description}", "${req.body.category}", "${req.body.owner}")`, (error) => {
                                     if (error) {
-                                        res.status(403).send();
+                                        res.status(500).send();
                                     }
                                     else {
                                         res.status(201).send();
@@ -172,3 +172,5 @@ exports.update_course = (req, res) => {
         }
     );
 }
+
+

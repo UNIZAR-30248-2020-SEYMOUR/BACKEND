@@ -26,6 +26,16 @@ CREATE TABLE CATEGORIES (
   PRIMARY KEY(name)
 );
 
+CREATE TABLE VIDEOS (
+  id int NOT NULL AUTO_INCREMENT,
+  title varchar(40) NOT NULL,
+  description varchar(255) NOT NULL,
+  course int NOT NULL REFERENCES COURSES(id),
+  location varchar(255) NOT NULL,
+  PRIMARY KEY(id),
+  CONSTRAINT course_fk FOREIGN KEY (course) REFERENCES COURSES(id) ON DELETE CASCADE
+);
+
 INSERT INTO CATEGORIES (name,imageUrl) VALUES("Marketing","assets/img/categories/marketing.jpg");
 INSERT INTO CATEGORIES (name,imageUrl) VALUES("Software","assets/img/categories/software.jpg");
 INSERT INTO CATEGORIES (name,imageUrl) VALUES("Hardware","assets/img/categories/hardware.jpg");
