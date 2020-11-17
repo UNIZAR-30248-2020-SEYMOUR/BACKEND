@@ -389,3 +389,50 @@ exports.update_profile = (req, res) => {
         }
     );
 }
+
+/**
+ * @api {post} /users/search Search for an user
+ * @apiName Search user
+ * @apiGroup User
+ *
+ * @apiParam {String} textToSearch text.
+ *
+ * @apiSuccess 200 OK.
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "uuid": "123456-123456-123456",
+ *       "username": "Juan",
+ *       "description": "My profile description"
+ *     }
+ * @apiError 500 Internal Server Error.
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 500 Not Found
+ *     {
+ *       "error": "description"
+ *     }
+ */
+exports.search = (req, res) => {
+    mysql.connection.query(
+        `select uuid, username, description from USERS where username LIKE "%${req.body.textToSearch}%"`,
+        (error, response_sql) => {
+            if (error) {
+                res.status(500).send();
+            }
+            else {
+                let responseData = [];
+                if (response_sql.length > 0) {
+                    for (let i = 0; i < response_sql.length; ++i) {
+                        rowUser = response_sql[i];
+                        let user = {};
+                        user.uuid = rowUser.uuid;
+                        user.username = rowUser.username;
+                        user.description = rowUser.description;
+                        responseData.push(user);
+                    }
+                }
+                res.status(200).send(responseData);
+            }
+        }
+    );
+};
