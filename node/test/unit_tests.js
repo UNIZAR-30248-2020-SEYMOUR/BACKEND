@@ -855,6 +855,18 @@ describe('Unit testing', () => {
     });
 
 
+    describe('Successful get all videos', () => {
+        it('Should get all videos and return 200', (done) => {
+            chai.request(app)
+                .post('/videos/upload')
+                .send()
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    done();
+                })
+        })
+    });
+
     // COURSE TESTS (again)
 
     describe('Successful Delete Course', () => {
