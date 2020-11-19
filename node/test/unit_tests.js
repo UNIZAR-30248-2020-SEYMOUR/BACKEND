@@ -795,6 +795,68 @@ describe('Unit testing', () => {
         });
     });
 
+    // VIDEO TESTS
+
+    describe('Successful Upload a Video into a Course', () => {
+        it('Should upload a video and return 201', (done) => {
+            chai.request(app)
+                .post('/videos/upload')
+                .send(
+                    {
+                        'id': 1,
+                        'title': 'testVideo1',
+                        'description': 'this is just a video for testing',
+                        'location': '/home/test',
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(201);
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful Upload a Video into a Course (Invalid course id)', () => {
+        it('Should NOT upload a video and return 403', (done) => {
+            chai.request(app)
+                .post('/videos/upload')
+                .send(
+                    {
+                        'id': -1,
+                        'title': 'testVideo1',
+                        'description': 'this is just a video for testing',
+                        'location': '/home/test',
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(403);
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful Upload a Video into a Course (Params too long)', () => {
+        it('Should NOT upload a video and return 500', (done) => {
+            chai.request(app)
+                .post('/videos/upload')
+                .send(
+                    {
+                        'id': 1,
+                        'title': 'LONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONG',
+                        'description': 'this is just a video for testing',
+                        'location': '/home/test',
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(500);
+                    done();
+                })
+        })
+    });
+
+
+    // COURSE TESTS (again)
+
     describe('Successful Delete Course', () => {
         it('Should delete the course and return 204', (done) => {
             chai.request(app)
@@ -841,6 +903,8 @@ describe('Unit testing', () => {
     });
 
 
+
+    // USER TESTS (again xd)
 
     describe('Successful Delete User', () => {
         it('Should Delete the user and return 204', (done) => {
