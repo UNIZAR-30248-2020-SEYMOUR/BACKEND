@@ -360,7 +360,7 @@ exports.update_profile = (req, res) => {
                     res.status(404).send({error: 'User does not exist'});
                 } else {
                     mysql.connection.query(
-                        `UPDATE USERS SET username = "${req.body.username}", description = "${req.body.description}", password = "${req.body.password}", email = "${req.body.email}" WHERE uuid = "${req.body.uuid}"`,
+                        `UPDATE USERS SET username = "${req.body.username}", description = "${req.body.description}", email = "${req.body.email}" WHERE uuid = "${req.body.uuid}"`,
                         (error) => {
                             if (error) {
                                 if (error.code === 'ER_DUP_ENTRY') {
