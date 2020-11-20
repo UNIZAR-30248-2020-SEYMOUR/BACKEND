@@ -19,5 +19,5 @@ jobs:
       - name: Launch containers and run tests
         run: |
           sudo bash up.sh &
-          sleep 90
+          sleep 120
           sudo docker exec nodejs 'npm' 'test'
