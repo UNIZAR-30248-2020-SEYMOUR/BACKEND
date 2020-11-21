@@ -171,6 +171,102 @@ exports.update_course = (req, res) => {
             }
         }
     );
-}
+};
+
+/**
+ * @api {post} /courses/get_info
+ * @apiName Get course info
+ * @apiGroup Course
+ *
+ * @apiParam {String} id Course id.
+ *
+ * @apiSuccess 200 Course info retrieved.
+ * @apiError  404 Course id does not exist.
+ * @apiError 500 Internal Server Error.
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "description"
+ *     }
+ */
+exports.get_info = (req, res) => {
+    let responseData = {};
+    mysql.connection.query(
+        `SELECT course.coursename, course.description, cat.name, cat.imageUrl FROM COURSES course, CATEGORIES cat WHERE course.id = "${req.body.id}" AND course.category = cat.name`, (error, response_sql) => {
+            if (error) {
+                res.status(500).send();
+            } else {
+                if (response_sql[0] === undefined) {
+                    res.status(404).send({error: 'Course does not exist'});
+                }
+                else {
+                    let courseData = response_sql[0];
+                    responseData.name = courseData.coursename;
+                    responseData.description = courseData.description;
+                    let category = {};
+                    category.name = courseData.name;
+                    category.imageUrl = courseData.imageUrl;
+                    responseData.category = category;
+                    res.status(200).send(responseData);
+                }
+            }
+    });
+};
+
+/**
+ * @api {post} /courses/get_videos
+ * @apiName Get list of videos in a course
+ * @apiGroup Course
+ *
+ * @apiParam {String} id Course id.
+ * @apiParam {String} firstVideo First video.
+ * @apiParam {String} lastVideo Last video.
+ *
+ * @apiSuccess 200 Videos of the course retrieved.
+ * @apiError  404 Course id does not exist.
+ * @apiError 500 Internal Server Error.
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "description"
+ *     }
+ */
+exports.get_videos = (req, res) => {
+    let responseData = [];
+    mysql.connection.query(
+        `SELECT id FROM COURSES WHERE id = "${req.body.id}"`, (error, response_sql) => {
+            if (error) {
+                res.status(500).send();
+            }
+            if (response_sql[0] === undefined) {
+                res.status(404).send({error: 'Course does not exist'});
+            }
+        }
+    );
+    mysql.connection.query(
+        `SELECT * FROM VIDEOS WHERE course = "${req.body.id}" ORDER BY id ASC`, (error, response_sql) => {
+            if (error) {
+                res.status(500).send();
+            }
+            else {
+                let videoList = response_sql;
+                const first = req.body.firstVideo;
+                const last = req.body.lastVideo;
+                let i;
+                for (i = first-1; i < last; i++) {
+                    let currentVideo = videoList[i];
+                    if (currentVideo === undefined) { break; }
+                    let videoData = {};
+                    videoData.id = currentVideo.id;
+                    videoData.name = currentVideo.title;
+                    videoData.description = currentVideo.description;
+                    responseData.push(videoData);
+                }
+                res.status(200).send(responseData);
+            }
+        }
+    );
+};
+
 
 
