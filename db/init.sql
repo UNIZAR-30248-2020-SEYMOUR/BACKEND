@@ -28,10 +28,10 @@ CREATE TABLE CATEGORIES (
 
 CREATE TABLE VIDEOS (
   id int NOT NULL AUTO_INCREMENT,
-  title varchar(40) NOT NULL,
-  description varchar(255) NOT NULL,
-  course int NOT NULL REFERENCES COURSES(id),
-  location varchar(255) NOT NULL,
+  title varchar(40),
+  description varchar(255),
+  course int REFERENCES COURSES(id),
+  location varchar(255),
   PRIMARY KEY(id),
   CONSTRAINT course_fk FOREIGN KEY (course) REFERENCES COURSES(id) ON DELETE CASCADE
 );

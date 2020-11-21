@@ -29,6 +29,7 @@ router.post('/categories/get_list', categoriesController.get_list)
 
 // VIDEOS
 router.post('/videos/upload', videosController.upload)
+router.post('/videos/details', videosController.details)
 router.post('/videos/get_list', videosController.get_list)
 
 

@@ -741,6 +741,7 @@ describe('Unit testing', () => {
         })
     });
 
+    /*
     describe('Successful Upload a Video into a Course', () => {
         it('Should upload a video and return 201', (done) => {
             chai.request(app)
@@ -811,6 +812,7 @@ describe('Unit testing', () => {
                 })
         })
     });
+     */
 
     describe('Successful Delete Course', () => {
         it('Should delete the course and return 204', (done) => {
