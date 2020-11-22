@@ -2,8 +2,10 @@ let chai = require('chai');
 let chaiHttp = require('chai-http');
 const expect = require('chai').expect;
 let app = require('../test');
+const fs = require('fs');
 
 chai.use(chaiHttp);
+
 
 describe('Unit testing', () => {
 
@@ -741,11 +743,26 @@ describe('Unit testing', () => {
         })
     });
 
+    describe('Successful Upload a Video into a Course', () => {
+        it('Should upload a video and return 201', (done) => {
+            console.log('test')
+            chai.request(app)
+                .post('/videos/upload')
+                .attach('videa', fs.readFileSync('test/test-video.mp4'))
+                .end(function (err, res) {
+                    done();
+                })
+        }, err => {
+            console.log('anothererror:' + err);
+        })
+
+    });
+
     /*
     describe('Successful Upload a Video into a Course', () => {
         it('Should upload a video and return 201', (done) => {
             chai.request(app)
-                .post('/videos/upload')
+                .post('/videos/details')
                 .send(
                     {
                         'id': 1,

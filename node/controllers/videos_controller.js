@@ -22,6 +22,7 @@ const mysql = require('../database/mysql');
  *     }
  */
 exports.upload = (req, res) => {
+    console.log(req);
     if(!req.files.video) {
         res.status(400).send({error: 'No video uploaded'});
     }
