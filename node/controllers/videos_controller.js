@@ -22,7 +22,9 @@ const mysql = require('../database/mysql');
  *     }
  */
 exports.upload = (req, res) => {
-    console.log(req);
+    console.log('Hello world2!')
+    console.log(req.files);
+    console.log(req.body);
     if(!req.files.video) {
         res.status(400).send({error: 'No video uploaded'});
     }

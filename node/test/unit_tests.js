@@ -812,19 +812,22 @@ describe('Unit testing', () => {
         })
     });
 
+
+    const path = require("path")
     describe('Successful Upload a Video into a Course', () => {
         it('Should upload a video and return 201', (done) => {
-            console.log('test')
+            console.log('ok')
             chai.request(app)
                 .post('/videos/upload')
-                .attach('videa', fs.readFileSync('test/test-video.mp4'))
-                .end(function (err, res) {
-                    done();
+                .field('Content-Type', 'multipart/form-data')
+                .attach('video','test/video-test.mp4')
+                .end(function(err, res) {
+                    if(err) {
+                        throw err;
+                    }
+                    done()
                 })
-        }, err => {
-            console.log('anothererror:' + err);
         })
-
     });
 
     /*
