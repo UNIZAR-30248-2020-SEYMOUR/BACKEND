@@ -78,7 +78,7 @@ exports.get_list = (req, res) => {
  * @apiName Delete a course
  * @apiGroup Course
  *
- * @apiParam {String} coursename Course id.
+ * @apiParam {Integer} coursename Course id.
 
  * @apiSuccess 204 Course deleted.
  * @apiError  404 Course does not exists
@@ -111,7 +111,7 @@ exports.delete = (req, res) => {
  * @apiName Update course info
  * @apiGroup Course
  *
- * @apiParam {String} id Course id.
+ * @apiParam {Integer} id Course id.
  * @apiParam {String} coursename Course name.
  * @apiParam {String} description Course description.
  * @apiParam {String} Category Course category.
@@ -178,7 +178,7 @@ exports.update_course = (req, res) => {
  * @apiName Get course info
  * @apiGroup Course
  *
- * @apiParam {String} id Course id.
+ * @apiParam {Integer} id Course id.
  *
  * @apiSuccess 200 Course info retrieved.
  * @apiError  404 Course id does not exist.
@@ -218,9 +218,9 @@ exports.get_info = (req, res) => {
  * @apiName Get list of videos in a course
  * @apiGroup Course
  *
- * @apiParam {String} id Course id.
- * @apiParam {String} firstVideo First video.
- * @apiParam {String} lastVideo Last video.
+ * @apiParam {Integer} id Course id.
+ * @apiParam {Integer} firstVideo First video.
+ * @apiParam {Integer} lastVideo Last video.
  *
  * @apiSuccess 200 Videos of the course retrieved.
  * @apiError  404 Course id does not exist.
@@ -238,31 +238,33 @@ exports.get_videos = (req, res) => {
             if (error) {
                 res.status(500).send();
             }
-            if (response_sql[0] === undefined) {
+            else if (response_sql[0] === undefined) {
                 res.status(404).send({error: 'Course does not exist'});
             }
-        }
-    );
-    mysql.connection.query(
-        `SELECT * FROM VIDEOS WHERE course = "${req.body.id}" ORDER BY id ASC`, (error, response_sql) => {
-            if (error) {
-                res.status(500).send();
-            }
             else {
-                let videoList = response_sql;
-                const first = req.body.firstVideo;
-                const last = req.body.lastVideo;
-                let i;
-                for (i = first-1; i < last; i++) {
-                    let currentVideo = videoList[i];
-                    if (currentVideo === undefined) { break; }
-                    let videoData = {};
-                    videoData.id = currentVideo.id;
-                    videoData.name = currentVideo.title;
-                    videoData.description = currentVideo.description;
-                    responseData.push(videoData);
-                }
-                res.status(200).send(responseData);
+                mysql.connection.query(
+                    `SELECT * FROM VIDEOS WHERE course = "${req.body.id}" ORDER BY id ASC`, (error, response_sql) => {
+                        if (error) {
+                            res.status(500).send();
+                        }
+                        else {
+                            let videoList = response_sql;
+                            const first = req.body.firstVideo;
+                            const last = req.body.lastVideo;
+                            let i;
+                            for (i = first-1; i < last; i++) {
+                                let currentVideo = videoList[i];
+                                if (currentVideo === undefined) { break; }
+                                let videoData = {};
+                                videoData.id = currentVideo.id;
+                                videoData.name = currentVideo.title;
+                                videoData.description = currentVideo.description;
+                                responseData.push(videoData);
+                            }
+                            res.status(200).send(responseData);
+                        }
+                    }
+                );
             }
         }
     );

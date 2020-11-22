@@ -305,6 +305,75 @@ describe('Unit testing', () => {
         })
     });
 
+    describe('Successful Get Information of a course', () => {
+        it('Should get the information of a course and return 200', (done) => {
+            chai.request(app)
+                .post('/courses/get_info')
+                .send(
+                    {
+                        'id': 1
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.property("name");
+                    expect(res.body).to.have.property("description");
+                    expect(res.body).to.have.property("category");
+                    expect(res.body.category).to.have.property("name");
+                    expect(res.body.category).to.have.property("imageUrl");
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful Get Information of a course', () => {
+        it('Should NOT get the information of a course that does not exist and return 404', (done) => {
+            chai.request(app)
+                .post('/courses/get_info')
+                .send(
+                    {
+                        'id': 404
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(404);
+                    done();
+                })
+        })
+    });
+
+    describe('Successful Get Videos of a course (0)', () => {
+        it('Should get 0 videos and return 200', (done) => {
+            chai.request(app)
+                .post('/courses/get_videos')
+                .send(
+                    {
+                        'id': 1
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful Get Videos of a course', () => {
+        it('Should NOT get the videos of a course that does not exist and return 404', (done) => {
+            chai.request(app)
+                .post('/courses/get_videos')
+                .send(
+                    {
+                        'id': 404
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(404);
+                    done();
+                })
+        })
+    });
+
     describe('Successful Get Courses', () => {
         it('Should get ALL the courses (1) and return 200', (done) => {
             chai.request(app)
@@ -799,6 +868,21 @@ describe('Unit testing', () => {
         })
     });
 
+    describe('Successful Get Videos of a course (1)', () => {
+            it('Should get 1 video and return 200', (done) => {
+                chai.request(app)
+                    .post('/courses/get_videos')
+                    .send(
+                        {
+                            'id': 1
+                        }
+                    )
+                    .end(function(err, res) {
+                        expect(res).to.have.status(200);
+                        done();
+                    })
+            })
+        });
 
     describe('Successful get all videos', () => {
         it('Should get all videos and return 200', (done) => {
@@ -850,6 +934,19 @@ describe('Unit testing', () => {
         it('Should get ALL the courses (0) and return 200', (done) => {
             chai.request(app)
                 .post('/courses/get_list')
+                .send()
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.length(0);
+                    done();
+                })
+        })
+    });
+
+    describe('Successful Get Videos', () => {
+        it('Should get ALL the videos (0) and return 200', (done) => {
+            chai.request(app)
+                .post('/videos/get_list')
                 .send()
                 .end(function(err, res) {
                     expect(res).to.have.status(200);
