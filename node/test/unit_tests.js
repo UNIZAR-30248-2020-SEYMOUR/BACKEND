@@ -2,8 +2,10 @@ let chai = require('chai');
 let chaiHttp = require('chai-http');
 const expect = require('chai').expect;
 let app = require('../test');
+const fs = require('fs');
 
 chai.use(chaiHttp);
+
 
 describe('Unit testing', () => {
 
@@ -850,11 +852,29 @@ describe('Unit testing', () => {
         })
     });
 
+
+    const path = require("path")
+    describe('Successful Upload a Video into a Course', () => {
+        it('Should upload a video and return 201', (done) => {
+            console.log('ok')
+            chai.request(app)
+                .post('/videos/upload')
+                .field('Content-Type', 'multipart/form-data')
+                .attach('video','test/video-test.mp4')
+                .end(function(err, res) {
+                    if(err) {
+                        throw err;
+                    }
+                    done()
+                })
+        })
+    });
+
     /*
     describe('Successful Upload a Video into a Course', () => {
         it('Should upload a video and return 201', (done) => {
             chai.request(app)
-                .post('/videos/upload')
+                .post('/videos/details')
                 .send(
                     {
                         'id': 1,

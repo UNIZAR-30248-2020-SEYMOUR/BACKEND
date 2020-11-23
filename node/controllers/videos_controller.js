@@ -22,10 +22,17 @@ const mysql = require('../database/mysql');
  *     }
  */
 exports.upload = (req, res) => {
-    if(!req.files.video) {
+    console.log('Hello world2!')
+    console.log(req.files);
+    console.log(req.body);
+
+    if(!req.files) {
         res.status(400).send({error: 'No video uploaded'});
     }
     else {
+        if (!req.files.video) {
+            res.status(400).send({error: 'No video uploaded'});
+        }
         let pathname = __dirname + '/../videos/' + new Date().getTime();
         req.files.video.mv(pathname, function (err) {
             if (err) {
