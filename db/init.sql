@@ -7,6 +7,7 @@ CREATE TABLE USERS (
   password varchar(256) NOT NULL,
   description varchar(255) DEFAULT NULL,
   resetLink varchar(255) DEFAULT NULL,
+  rate int DEFAULT 0,
   PRIMARY KEY (uuid)
 );
 

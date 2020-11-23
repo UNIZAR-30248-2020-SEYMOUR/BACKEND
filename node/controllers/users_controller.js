@@ -216,7 +216,8 @@ exports.forgot_password = (req, res) => {
  *     {
  *       "username": "Juan",
  *       "description": "My profile description",
- *       "email":"juan@gmail.com",
+ *       "email": "juan@gmail.com",
+ *       "rate": 54,
  *       "courses": [{
  *           "id", "1",
  *           "coursename":"My course",
@@ -238,7 +239,7 @@ exports.forgot_password = (req, res) => {
 exports.user_profile = (req, res) => {
     let responseData = {};
     mysql.connection.query(
-        `select username, description, email from USERS where uuid = "${req.body.uuid}"`,
+        `select username, description, email, rate from USERS where uuid = "${req.body.uuid}"`,
         (error, response_sqlUser) => {
             let rowUser;
             if (error) {
@@ -251,9 +252,94 @@ exports.user_profile = (req, res) => {
                     responseData.username = rowUser.username;
                     responseData.description = rowUser.description;
                     responseData.email = rowUser.email;
+                    responseData.rate = rowUser.rate;
                     responseData.courses = [];
                     mysql.connection.query(
                         `select c.id, c.coursename, c.description, cat.name, cat.imageUrl from COURSES c, CATEGORIES cat where c.owner = "${req.body.uuid}" and c.category = cat.name`,
+                        (error, response_sqlCourses) => {
+                            let rowCourse;
+                            if (error) {
+                                res.status(500).send();
+                            }
+                            else {
+                                if (response_sqlCourses.length > 0) {
+                                    for (let i = 0; i < response_sqlCourses.length; ++i) {
+                                        rowCourse = response_sqlCourses[i];
+                                        let course = {};
+                                        let category = {};
+                                        course.id = rowCourse.id;
+                                        course.coursename = rowCourse.coursename;
+                                        course.description = rowCourse.description;
+                                        category.name = rowCourse.name;
+                                        category.imageUrl = rowCourse.imageUrl;
+                                        course.category = category;
+                                        responseData.courses.push(course);
+                                    }
+                                }
+                                res.status(200).send(responseData);
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    );
+};
+
+/**
+ * @api {post} /users/get_user Get user info
+ * @apiName Get user info
+ * @apiGroup User
+ *
+ * @apiParam {String} username Username of the user to retrieve.
+ *
+ * @apiSuccess 200 OK.
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "username": "Juan",
+ *       "description": "My profile description",
+ *       "email": "juan@gmail.com",
+ *       "rate": 54,
+ *       "courses": [{
+ *           "id", "1",
+ *           "coursename":"My course",
+ *           "description":"This is my first course",
+ *           "category" : {
+ *               "name" : "Science",
+ *               "imageUrl" : "example.com/science.jpg"
+ *               }
+ *           }
+ *       }
+ * @apiError  404 User does not exists.
+ * @apiError 500 Internal Server Error.
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "description"
+ *     }
+ */
+exports.get_user = (req, res) => {
+    let responseData = {};
+    mysql.connection.query(
+        `select username, description, email, rate, uuid from USERS where username = "${req.body.username}"`,
+        (error, response_sqlUser) => {
+            let rowUser;
+            if (error) {
+                res.status(500).send();
+            } else {
+                rowUser = response_sqlUser[0]
+                if (rowUser === undefined) {
+                    res.status(404).send({error: 'User does not exist'});
+                } else {
+                    responseData.username = rowUser.username;
+                    responseData.description = rowUser.description;
+                    responseData.email = rowUser.email;
+                    responseData.rate = rowUser.rate;
+                    responseData.courses = [];
+                    let uuid = rowUser.uuid;
+                    mysql.connection.query(
+                        `select c.id, c.coursename, c.description, cat.name, cat.imageUrl from COURSES c, CATEGORIES cat where c.owner = "${uuid}" and c.category = cat.name`,
                         (error, response_sqlCourses) => {
                             let rowCourse;
                             if (error) {

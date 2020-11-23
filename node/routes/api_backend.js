@@ -11,10 +11,12 @@ router.post('/users/login', usersController.login)
 router.post('/users/forgot_password', usersController.forgot_password)
 router.post('/users/reset_password', usersController.reset_password)
 router.post('/users/user_profile', usersController.user_profile)
+router.post('/users/get_user', usersController.get_user)
 router.post('/users/delete', usersController.delete)
 router.post('/users/get_list', usersController.get_list)
 router.post('/users/update_profile', usersController.update_profile)
 router.post('/users/search', usersController.search)
+
 
 // COURSES
 router.post('/courses/create_course', coursesController.create_course)

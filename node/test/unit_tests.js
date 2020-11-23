@@ -525,7 +525,7 @@ describe('Unit testing', () => {
         });
     });
 
-    describe('Successful Response With User Information (Happy Path)', () => {
+    describe('Successful Response With User Profile Information (Happy Path)', () => {
         it('Should get the user information and return 200', (done) => {
             chai.request(app)
                 .post('/users/user_profile')
@@ -540,6 +540,46 @@ describe('Unit testing', () => {
                     expect(res.body).to.have.property('description');
                     expect(res.body).to.have.property('courses');
                     expect(res.body).to.have.property('email');
+                    expect(res.body).to.have.property('rate');
+                    expect(res.body.courses).to.have.length(1);
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful Get User Profile Information (Wrong UUID)', () => {
+        it('Should not get user information and return 404', (done) => {
+            chai.request(app)
+                .post('/users/user_profile')
+                .send(
+                    {
+                        'uuid': 'no_existo'
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(404);
+                    expect(res.body).to.have.property('error');
+                    done();
+                })
+        })
+    });
+
+    describe('Successful Response With User Information (Happy Path)', () => {
+        it('Should get the user information and return 200', (done) => {
+            chai.request(app)
+                .post('/users/get_user')
+                .send(
+                    {
+                        'username': 'integration_user'
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.property('username');
+                    expect(res.body).to.have.property('description');
+                    expect(res.body).to.have.property('courses');
+                    expect(res.body).to.have.property('email');
+                    expect(res.body).to.have.property('rate');
                     expect(res.body.courses).to.have.length(1);
                     done();
                 })
@@ -549,10 +589,10 @@ describe('Unit testing', () => {
     describe('Unsuccessful Get User Information (Wrong UUID)', () => {
         it('Should not get user information and return 404', (done) => {
             chai.request(app)
-                .post('/users/user_profile')
+                .post('/users/get_user')
                 .send(
                     {
-                        'uuid': 'no_existo'
+                        'username': 'no_existo'
                     }
                 )
                 .end(function(err, res) {
