@@ -588,7 +588,7 @@ describe('Unit testing', () => {
         })
     });
 
-    describe('Unsuccessful Get User Information (Wrong UUID)', () => {
+    describe('Unsuccessful Get User Information (Wrong username)', () => {
         it('Should not get user information and return 404', (done) => {
             chai.request(app)
                 .post('/users/get_user')
