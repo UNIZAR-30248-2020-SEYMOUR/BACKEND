@@ -78,7 +78,7 @@ exports.get_list = (req, res) => {
  * @apiName Delete a course
  * @apiGroup Course
  *
- * @apiParam {Integer} coursename Course id.
+ * @apiParam {Integer} id Course id.
 
  * @apiSuccess 204 Course deleted.
  * @apiError  404 Course does not exists
