@@ -482,8 +482,8 @@ describe('Unit testing', () => {
                     expect(res.body).to.have.property('id');
                     expect(res.body).to.have.property('coursename');
                     expect(res.body).to.have.property('description');
-                    expect(res.body).to.have.property('category');
-                    expect(res.body).to.have.property('owner');
+                    expect(res.body).to.have.property('name');
+                    expect(res.body).to.have.property('imageUrl');
                     done();
                 })
         });

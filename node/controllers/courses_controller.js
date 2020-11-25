@@ -152,7 +152,7 @@ exports.update_course = (req, res) => {
                                             res.status(500).send()
                                         } else {
                                             mysql.connection.query(
-                                                `select * from COURSES where id = "${req.body.id}"`,
+                                                `select c.id, c.coursename, c.description, cat.name, cat.imageUrl from COURSES c, CATEGORIES cat where c.id = "${req.body.id}" and c.category = cat.name`,
                                                 (error, response_sqlCourse) => {
                                                     if (error) {
                                                         res.status(500).send();
