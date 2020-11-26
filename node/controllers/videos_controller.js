@@ -22,10 +22,6 @@ const mysql = require('../database/mysql');
  *     }
  */
 exports.upload = (req, res) => {
-    console.log('Hello world2!')
-    console.log(req.files);
-    console.log(req.body);
-
     if(!req.files) {
         res.status(400).send({error: 'No video uploaded'});
     }
@@ -54,6 +50,18 @@ exports.upload = (req, res) => {
         });
     }
 }
+
+exports.upload_test = (req, res) => {
+    mysql.connection.query(`insert into VIDEOS (location) values ("/var/test")`,
+        (error, sqlResult) => {
+                if(error) {
+                }
+                res.status(201).send(sqlResult.insertId + "");
+        });
+}
+
+
+
 /**
  * @api {post} /videos/details Assign details to an uploaded video
  * @apiName Detail a video

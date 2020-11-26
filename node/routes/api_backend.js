@@ -35,6 +35,7 @@ router.post('/categories/get_list', categoriesController.get_list)
 router.post('/videos/upload', videosController.upload)
 router.post('/videos/details', videosController.details)
 router.post('/videos/get_list', videosController.get_list)
+router.post('/videos/upload_test', videosController.upload_test) // WARNING: Only for testing purposes!!
 
 
 

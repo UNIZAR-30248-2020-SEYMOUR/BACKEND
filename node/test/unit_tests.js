@@ -882,7 +882,7 @@ describe('Unit testing', () => {
 
 
     describe('Successful Assign details to an uploaded video', () => {
-        it('Should NOT assign details to an video and return 201', (done) => {
+        it('Should assign details to an video and return 201', (done) => {
             chai.request(app)
                 .post('/videos/details')
                 .send(
@@ -894,7 +894,7 @@ describe('Unit testing', () => {
                     }
                 )
                 .end(function(err, res) {
-                    expect(res).to.have.status(200);
+                    expect(res).to.have.status(201);
                     done();
                 })
         })
