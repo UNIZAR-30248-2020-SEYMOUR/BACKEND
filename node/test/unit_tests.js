@@ -852,81 +852,34 @@ describe('Unit testing', () => {
         })
     });
 
-
-    const path = require("path")
-    describe('Successful Upload a Video into a Course', () => {
-        it('Should upload a video and return 201', (done) => {
-            console.log('ok')
-            chai.request(app)
-                .post('/videos/upload')
-                .field('Content-Type', 'multipart/form-data')
-                .attach('video','test/video-test.mp4')
-                .end(function(err, res) {
-                    if(err) {
-                        throw err;
-                    }
-                    done()
-                })
-        })
-    });
-
-    /*
+    let videoInsertId = undefined;
     describe('Successful Upload a Video into a Course', () => {
         it('Should upload a video and return 201', (done) => {
             chai.request(app)
-                .post('/videos/details')
-                .send(
-                    {
-                        'id': 1,
-                        'title': 'testVideo1',
-                        'description': 'this is just a video for testing',
-                        'location': '/home/test',
-                    }
-                )
+                .post('/videos/upload_test')
+                .send()
                 .end(function(err, res) {
                     expect(res).to.have.status(201);
+                    videoInsertId = res.text;
                     done();
                 })
         })
     });
 
-    describe('Unsuccessful Upload a Video into a Course (Invalid course id)', () => {
-        it('Should NOT upload a video and return 403', (done) => {
+    describe('Unsuccessful Upload a Video (No content)', () => {
+        it('Should NOT upload a video and return 400', (done) => {
             chai.request(app)
                 .post('/videos/upload')
                 .send(
-                    {
-                        'id': -1,
-                        'title': 'testVideo1',
-                        'description': 'this is just a video for testing',
-                        'location': '/home/test',
-                    }
+                    {}
                 )
                 .end(function(err, res) {
-                    expect(res).to.have.status(403);
+                    expect(res).to.have.status(400);
                     done();
                 })
         })
     });
 
-    describe('Unsuccessful Upload a Video into a Course (Params too long)', () => {
-        it('Should NOT upload a video and return 500', (done) => {
-            chai.request(app)
-                .post('/videos/upload')
-                .send(
-                    {
-                        'id': 1,
-                        'title': 'LONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONG',
-                        'description': 'this is just a video for testing',
-                        'location': '/home/test',
-                    }
-                )
-                .end(function(err, res) {
-                    expect(res).to.have.status(500);
-                    done();
-                })
-        })
-    });
 
     describe('Successful Get Videos of a course (1)', () => {
             it('Should get 1 video and return 200', (done) => {
@@ -944,19 +897,21 @@ describe('Unit testing', () => {
             })
         });
 
-    describe('Successful get all videos', () => {
-        it('Should get all videos and return 200', (done) => {
-            chai.request(app)
-                .post('/videos/get_list')
-                .send()
-                .end(function(err, res) {
-                    expect(res).to.have.status(200);
-                    expect(res.body).to.have.length(1);
-                    done();
-                })
-        })
-    });
-     */
+        describe('Successful get all videos', () => {
+            it('Should get all videos and return 200', (done) => {
+                chai.request(app)
+                    .post('/videos/get_list')
+                    .send()
+                    .end(function(err, res) {
+                        expect(res).to.have.status(200);
+                        expect(res.body).to.have.length(1);
+                        done();
+                    })
+            })
+        });
+
+
+    // END
 
     describe('Successful Delete Course', () => {
         it('Should delete the course and return 204', (done) => {
