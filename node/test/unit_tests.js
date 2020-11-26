@@ -881,6 +881,83 @@ describe('Unit testing', () => {
     });
 
 
+    describe('Successful Assign details to an uploaded video', () => {
+        it('Should NOT assign details to an video and return 201', (done) => {
+            chai.request(app)
+                .post('/videos/details')
+                .send(
+                    {
+                        'course': 1,
+                        'video' : videoInsertId,
+                        'title': 'test title',
+                        'description': 'this is just a video for testing',
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    done();
+                })
+        })
+    });
+
+
+    describe('Unsuccessful Assign details to an uploaded video (Invalid course ID)', () => {
+        it('Should NOT assign details to an video and return 403', (done) => {
+            chai.request(app)
+                .post('/videos/details')
+                .send(
+                    {
+                        'course': 'does_not_exists',
+                        'video' : videoInsertId,
+                        'title': 'test title',
+                        'description': 'this is just a video for testing',
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(403);
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful Assign details to an uploaded video (Invalid video ID)', () => {
+        it('Should NOT assign details to an video and return 403', (done) => {
+            chai.request(app)
+                .post('/videos/details')
+                .send(
+                    {
+                        'course': 1,
+                        'video' : 'does_not_exists',
+                        'title': 'test video',
+                        'description': 'this is just a video for testing',
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(403);
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful Assign details to an uploaded video (Params too long)', () => {
+        it('Should NOT assign details to an video and return 500', (done) => {
+            chai.request(app)
+                .post('/videos/details')
+                .send(
+                    {
+                        'course': 1,
+                        'video' : videoInsertId,
+                        'title': 'LONGLONGLONGLONGLONGLONGLLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONG',
+                        'description': 'this is just a video for testing',
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(500);
+                    done();
+                })
+        })
+    });
+
     describe('Successful Get Videos of a course (1)', () => {
             it('Should get 1 video and return 200', (done) => {
                 chai.request(app)
