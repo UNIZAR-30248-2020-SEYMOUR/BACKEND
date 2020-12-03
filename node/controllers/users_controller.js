@@ -192,7 +192,7 @@ exports.forgot_password = (req, res) => {
                         to: req.body.email,
                         subject: '[SEYMOUR] Recupera tu contraseña',
                         html: `<h2>Accede al siguiente link para recuperar tu contraseña</h2>
-                                   <p>http://win.danielhuici.ml/#/recover-password?token=${token}</p>`
+                                   <p>http://91.250.180.41/#/recover-password?token=${token}</p>`
                     };
                     mysql.connection.query(`UPDATE USERS SET resetLink = "${token}" WHERE email = "${req.body.email}"`);
                     nodemailer.sendEmail(emailData);
