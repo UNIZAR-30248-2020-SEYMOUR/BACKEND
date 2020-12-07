@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('../controllers/email_controller');
 const { v4: uuidv4 } = require('uuid');
 const RESET_PASSWORD_MASTERKEY = 'MasterKey1.'
+const bcrypt = require("bcryptjs")
+const saltRounds=10
 
 /**
  * @api {post} /users/register User register
@@ -32,9 +34,10 @@ const RESET_PASSWORD_MASTERKEY = 'MasterKey1.'
 
 exports.register = (req, res) => {
     let uuid = uuidv4()
+    let hashedPassword = bcrypt.hashSync(req.body.password, saltRounds)
     mysql.connection.query(
         `insert into USERS (uuid, username, email, password, description) values
-                    ("${uuid}", "${req.body.username}", "${req.body.email}", "${req.body.password}", "${req.body.description}")`,
+                    ("${uuid}", "${req.body.username}", "${req.body.email}", "${hashedPassword}", "${req.body.description}")`,
         (error) => {
             if (error) {
                 if (error.code === 'ER_DUP_ENTRY') {
@@ -85,12 +88,13 @@ exports.login = (req, res) => {
             }
             else {
                 row = response_sql[0]
+                let passwordIsCorrect = bcrypt.compareSync(req.body.password, row.password)
                 if (row === undefined) {
                     res.status(403).send({error: 'Invalid email'});
-                } else if (req.body.password !== row.password) {
-                    res.status(403).send({error: 'Invalid password'});
-                } else {
+                } else if (passwordIsCorrect) {
                     res.status(200).send({UUID: row.uuid});
+                } else {
+                    res.status(403).send({error: 'Invalid password'});
                 }
             }
         }
