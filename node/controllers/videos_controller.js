@@ -23,32 +23,32 @@ const mysql = require('../database/mysql');
  */
 exports.upload = (req, res) => {
     if(!req.files) {
-        res.status(400).send({error: 'No video uploaded'});
+        return res.status(400).send({error: 'No video uploaded'});
     }
-    else {
-        if (!req.files.video) {
-            res.status(400).send({error: 'No video uploaded'});
+    if (!req.files.video) {
+        return res.status(400).send({error: 'No video uploaded'});
+    }
+    if(req.files.video.mimetype !== 'video/mp4') {
+        return res.status(400).send({error: 'Video format must be video/mp4'});
+    }
+    if(req.files.video.size > 200000000) {
+        return res.status(400).send({error: 'Video must not exceed 200 MiB'});
+    }
+    let pathname = __dirname + '/../videos/' + new Date().getTime();
+    req.files.video.mv(pathname, function (err) {
+        if (err) {
+            return res.send().status(500);
         }
-        let pathname = __dirname + '/../videos/' + new Date().getTime();
-        req.files.video.mv(pathname, function (err) {
-            if (err) {
-                res.send().status(500);
+        mysql.connection.query(
+            `insert into VIDEOS (location) values ("${pathname}")`,
+            (error, sqlResult) => {
+                if (error) {
+                    return res.status(500).send();
+                }
+                return res.status(201).send(sqlResult.insertId + "");
             }
-            else {
-                mysql.connection.query(
-                    `insert into VIDEOS (location) values ("${pathname}")`,
-                    (error, sqlResult) => {
-                        if (error) {
-                            res.status(500).send();
-                        }
-                        else {
-                            res.status(201).send(sqlResult.insertId + "");
-                        }
-                    }
-                );
-            }
-        });
-    }
+        );
+    });
 }
 
 exports.upload_test = (req, res) => {
