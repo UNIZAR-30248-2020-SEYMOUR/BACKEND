@@ -146,7 +146,7 @@ describe('Unit testing', () => {
     });
 
     describe('Unsuccessful Register: Invalid password', () => {
-        it('Should NOT register and return 500', (done) => {
+        it('Should NOT register and return 400', (done) => {
             chai.request(app)
                 .post('/users/register')
                 .send(
@@ -158,7 +158,7 @@ describe('Unit testing', () => {
                     }
                 )
                 .end(function(err, res) {
-                        expect(res).to.have.status(500);
+                        expect(res).to.have.status(400);
                         done();
                     }
                 )

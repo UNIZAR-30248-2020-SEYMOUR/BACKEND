@@ -33,25 +33,30 @@ const saltRounds=10
  */
 
 exports.register = (req, res) => {
-    let uuid = uuidv4()
-    let hashedPassword = bcrypt.hashSync(req.body.password, saltRounds)
-    mysql.connection.query(
-        `insert into USERS (uuid, username, email, password, description) values
+    if (req.body.password.length > 40) {
+        res.status(400).send()
+    }
+    else {
+        let uuid = uuidv4()
+        let hashedPassword = bcrypt.hashSync(req.body.password, saltRounds)
+        mysql.connection.query(
+            `insert into USERS (uuid, username, email, password, description) values
                     ("${uuid}", "${req.body.username}", "${req.body.email}", "${hashedPassword}", "${req.body.description}")`,
-        (error) => {
-            if (error) {
-                if (error.code === 'ER_DUP_ENTRY') {
-                    res.status(409).send({error: error.sqlMessage});
+            (error) => {
+                if (error) {
+                    if (error.code === 'ER_DUP_ENTRY') {
+                        res.status(409).send({error: error.sqlMessage});
+                    }
+                    else {
+                        res.status(500).send()
+                    }
                 }
                 else {
-                    res.status(500).send()
+                    res.status(201).send({UUID: uuid});
                 }
             }
-            else {
-                res.status(201).send({UUID: uuid});
-            }
-        }
-    );
+        );
+    }
 };
 
 
@@ -88,13 +93,15 @@ exports.login = (req, res) => {
             }
             else {
                 row = response_sql[0]
-                let passwordIsCorrect = bcrypt.compareSync(req.body.password, row.password)
                 if (row === undefined) {
                     res.status(403).send({error: 'Invalid email'});
-                } else if (passwordIsCorrect) {
-                    res.status(200).send({UUID: row.uuid});
-                } else {
-                    res.status(403).send({error: 'Invalid password'});
+                }
+                else {
+                    if (bcrypt.compareSync(req.body.password, row.password)) {
+                        res.status(200).send({UUID: row.uuid});
+                    } else {
+                        res.status(403).send({error: 'Invalid password'});
+                    }
                 }
             }
         }
