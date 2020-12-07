@@ -61,12 +61,7 @@ exports.get_list = (req, res) => {
     mysql.connection.query(
         `select * from COURSES`,
         (error, response_sql) => {
-            if (error) {
-                res.status(500).send();
-            }
-            else {
-                res.status(200).send(response_sql);
-            }
+            res.status(200).send(response_sql);
         }
     );
 };
@@ -93,14 +88,11 @@ exports.delete = (req, res) => {
     mysql.connection.query(
         `delete from COURSES where id = "${req.body.id}"`,
         (error, response_sql) => {
-            if (error) {
-                res.status(500).send();
-            }
-            else if (response_sql.affectedRows === 1){
-                res.status(204).send();
+            if (response_sql.affectedRows === 1){
+                return res.status(204).send();
             }
             else if (response_sql.affectedRows === 0){
-                res.status(404).send();
+                return res.status(404).send();
             }
         }
     );
@@ -128,9 +120,6 @@ exports.delete = (req, res) => {
 exports.update_course = (req, res) => {
     mysql.connection.query(
         `select * from COURSES where id = "${req.body.id}"`, (error, courses) => {
-            if (error) {
-                return res.status(500).send()
-            }
             if (courses[0] === undefined) {
                 return res.status(403).send({error: 'Course does not exist'})
             }
@@ -143,19 +132,13 @@ exports.update_course = (req, res) => {
                         `UPDATE COURSES SET coursename = "${req.body.coursename}", 
                             description = "${req.body.description}", category = "${req.body.category}" 
                                 WHERE id = "${req.body.id}"`, (error) => {
-                            if (error) {
-                                return res.status(500).send()
-                            }
-                            mysql.connection.query(
-                                `select c.id, c.coursename, c.description, cat.name, cat.imageUrl from COURSES c, 
-                                    CATEGORIES cat where c.id = "${req.body.id}" and c.category = cat.name`,
-                                (error, updated) => {
-                                    if (error) {
-                                        return res.status(500).send();
-                                    }
-                                    return res.status(200).send(updated[0]);
-                                }
-                            );
+                                    mysql.connection.query(
+                                        `select c.id, c.coursename, c.description, cat.name, cat.imageUrl from COURSES c, 
+                                            CATEGORIES cat where c.id = "${req.body.id}" and c.category = cat.name`,
+                                        (error, updated) => {
+                                            return res.status(200).send(updated[0]);
+                                        }
+                                    );
                         }
                     );
                 }
@@ -186,10 +169,6 @@ exports.get_info = (req, res) => {
     mysql.connection.query(
         `SELECT course.coursename, course.description, cat.name, cat.imageUrl FROM COURSES course, CATEGORIES cat 
             WHERE course.id = "${req.body.id}" AND course.category = cat.name`, (error, response_sql) => {
-
-            if (error) {
-                return res.status(500).send();
-            }
 
             if (response_sql[0] === undefined) {
                 return res.status(404).send({error: 'Course does not exist'});
@@ -230,17 +209,11 @@ exports.get_videos = (req, res) => {
     let responseData = [];
     mysql.connection.query(
         `SELECT id FROM COURSES WHERE id = "${req.body.id}"`, (error, response_sql) => {
-            if (error) {
-                return res.status(500).send();
-            }
             if (response_sql[0] === undefined) {
                 return res.status(404).send({error: 'Course does not exist'});
             }
             mysql.connection.query(
                 `SELECT * FROM VIDEOS WHERE course = "${req.body.id}" ORDER BY id ASC`, (error, response_sql) => {
-                    if (error) {
-                        return res.status(500).send();
-                    }
                     let videoList = response_sql;
                     const first = req.body.firstVideo;
                     const last = req.body.lastVideo;

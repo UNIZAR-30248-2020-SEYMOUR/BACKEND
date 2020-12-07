@@ -42,9 +42,6 @@ exports.upload = (req, res) => {
         mysql.connection.query(
             `insert into VIDEOS (location) values ("${pathname}")`,
             (error, sqlResult) => {
-                if (error) {
-                    return res.status(500).send();
-                }
                 return res.status(201).send(sqlResult.insertId + "");
             }
         );
@@ -55,10 +52,7 @@ exports.upload = (req, res) => {
 exports.upload_test = (req, res) => {
     mysql.connection.query(`insert into VIDEOS (location) values ("/var/test")`,
         (error, sqlResult) => {
-                if(error) {
-                    return res.status(201).send();
-                }
-                return res.status(201).send(sqlResult.insertId + "");
+            return res.status(201).send(sqlResult.insertId + "");
         });
 }
 
@@ -121,9 +115,6 @@ exports.details = (req, res) => {
 exports.get_list = (req, res) => {
     mysql.connection.query(
         `select * from VIDEOS`, (error, response_sql) => {
-            if (error) {
-                return res.status(500).send();
-            }
             return res.status(200).send(response_sql);
         }
     );

@@ -84,9 +84,6 @@ exports.login = (req, res) => {
     mysql.connection.query(
         `select password, uuid from USERS where email = "${req.body.email}"`,
         (error, response_sql) => {
-            if (error) {
-                return res.status(500).send();
-            }
             if (response_sql[0] === undefined) {
                 return res.status(403).send({error: 'Invalid email'});
             }
@@ -108,9 +105,6 @@ exports.login = (req, res) => {
  */
 exports.get_list = (req, res) => {
     mysql.connection.query(`select * from USERS`,(error, response_sql) => {
-        if (error) {
-            return res.status(500).send();
-        }
         return res.status(200).send(response_sql);
     });
 };
@@ -138,13 +132,9 @@ exports.reset_password = (req, res) => {
             return res.status(401).send({error: 'Incorrect token or token expired'})
         }
         mysql.connection.query(`UPDATE USERS SET resetLink = "", password = "${req.body.newPassword}" 
-            WHERE resetLink = "${req.body.token}"`,
-                (error) => {
-                    if (error) {
-                        return res.status(500).send()
-                    }
+            WHERE resetLink = "${req.body.token}"`, () => {
                     return res.status(200).send();
-                }
+            }
         );
     })
 };
@@ -169,9 +159,6 @@ exports.reset_password = (req, res) => {
 exports.forgot_password = (req, res) => {
     mysql.connection.query(
         `SELECT * FROM USERS WHERE email = "${req.body.email}"`, (error, response_sql) => {
-            if (error) {
-                return res.status(500).send();
-            }
             if (response_sql[0] === undefined) {
                 return res.status(403).send({error: 'Invalid email'});
             }
@@ -228,9 +215,6 @@ exports.user_profile = (req, res) => {
     mysql.connection.query(
         `select username, description, email, rate from USERS where uuid = "${req.body.uuid}"`,
             (error, response_sqlUser) => {
-                if (error) {
-                    return res.status(500).send();
-                }
                 if (response_sqlUser[0] === undefined) {
                     return res.status(404).send({error: 'User does not exist'});
                 }
@@ -243,9 +227,6 @@ exports.user_profile = (req, res) => {
                     `select c.id, c.coursename, c.description, cat.name, cat.imageUrl from COURSES c, CATEGORIES cat 
                         where c.owner = "${req.body.uuid}" and c.category = cat.name`,
                         (error, response_sqlCourses) => {
-                            if (error) {
-                                return res.status(500).send();
-                            }
                             if (response_sqlCourses.length > 0) {
                                 for (let i = 0; i < response_sqlCourses.length; ++i) {
                                     let course = {};
@@ -304,9 +285,6 @@ exports.get_user = (req, res) => {
     mysql.connection.query(
         `select username, description, email, rate, uuid from USERS where username = "${req.body.username}"`,
         (error, response_sqlUser) => {
-            if (error) {
-                return res.status(500).send();
-            }
             if (response_sqlUser[0] === undefined) {
                 return res.status(404).send({error: 'User does not exist'});
             }
@@ -321,9 +299,6 @@ exports.get_user = (req, res) => {
                     where c.owner = "${uuid}" and c.category = cat.name`,
                         (error, response_sqlCourses) => {
                             let rowCourse;
-                            if (error) {
-                                return res.status(500).send();
-                            }
                             if (response_sqlCourses.length > 0) {
                                 for (let i = 0; i < response_sqlCourses.length; ++i) {
                                     rowCourse = response_sqlCourses[i];
@@ -365,9 +340,6 @@ exports.delete = (req, res) => {
     mysql.connection.query(
         `delete from USERS where uuid = "${req.body.uuid}"`,
         (error, response_sql) => {
-            if (error) {
-                return res.status(500).send();
-            }
             if (response_sql.affectedRows === 1){
                 return res.status(204).send();
             }
@@ -412,9 +384,6 @@ exports.update_profile = (req, res) => {
     mysql.connection.query(
         `select username, description, email from USERS where uuid = "${req.body.uuid}"`,
             (error, response_sqlUser) => {
-                if (error) {
-                    return res.status(500).send();
-                }
                 if (response_sqlUser[0] === undefined) {
                     return res.status(404).send({error: 'User does not exist'});
                 }
@@ -431,9 +400,6 @@ exports.update_profile = (req, res) => {
                                 mysql.connection.query(
                                     `select * from USERS where uuid = "${req.body.uuid}"`,
                                     (error, response_sqlUser) => {
-                                        if (error) {
-                                            return res.status(500).send();
-                                        }
                                         return res.status(200).send(response_sqlUser[0]);
                                     }
                                 );
@@ -469,9 +435,6 @@ exports.search = (req, res) => {
     mysql.connection.query(
         `select uuid, username, description from USERS where username LIKE "%${req.body.textToSearch}%"`,
         (error, response_sql) => {
-            if (error) {
-                return res.status(500).send();
-            }
             let responseData = [];
             if (response_sql.length > 0) {
                 for (let i = 0; i < response_sql.length; ++i) {

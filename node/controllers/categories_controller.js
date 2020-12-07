@@ -23,9 +23,6 @@ const mysql = require('../database/mysql');
 exports.get_list = (req, res) => {
     mysql.connection.query(
         `select * from CATEGORIES`, (error, response_sql) => {
-            if (error) {
-                return res.status(500).send();
-            }
             return res.status(200).send(response_sql);
         }
     );
