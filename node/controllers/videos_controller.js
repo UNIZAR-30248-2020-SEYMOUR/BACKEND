@@ -119,3 +119,40 @@ exports.get_list = (req, res) => {
         }
     );
 }
+
+/**
+ * @api {post} /videos/rate Rate one video
+ * @apiName Rate video
+ * @apiGroup Video
+ *
+ * @apiParam {Integer} video Video id.
+ * @apiParam {String} uuid Rater uuid.
+ * @apiParam {Integer} rate Rate.
+ *
+ * @apiSuccess 201 OK.
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 201 OK
+ *     {
+ *       "rate": 3.4
+ *     }
+ * @apiError 404 User or video does not exist.
+ * @apiError 500 Internal Server Error.
+ */
+exports.rate = (req, res) => {
+    mysql.connection.query( `SELECT * FROM USERS WHERE uuid="${req.body.uuid}"`, (error, response) => {
+        if(response[0] === undefined) {
+            return res.status(404).send("User does not exist")
+        }
+        mysql.connection.query( `SELECT * FROM VIDEOS WHERE id="${req.body.video}"`, (error, response) => {
+            if(response[0] === undefined) {
+                return res.status(404).send("Video does not exist")
+            }
+            mysql.connection.query( `INSERT INTO USER_RATES (id_user, id_video, score) VALUES("${req.body.uuid}", 
+                "${req.body.video}", "${req.body.rate}") ON DUPLICATE KEY UPDATE score="${req.body.rate}"`, () => {
+                    mysql.connection.query( `SELECT rate FROM VIDEOS WHERE id=${req.body.video}`, (error, response) => {
+                        return res.status(201).send(response[0])
+                    });
+            });
+        });
+    });
+}
