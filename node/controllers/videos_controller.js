@@ -51,16 +51,16 @@ exports.upload = (req, res) => {
     });
 }
 
+// Just for testing!!!
 exports.upload_test = (req, res) => {
     mysql.connection.query(`insert into VIDEOS (location) values ("/var/test")`,
         (error, sqlResult) => {
                 if(error) {
+                    return res.status(201).send();
                 }
-                res.status(201).send(sqlResult.insertId + "");
+                return res.status(201).send(sqlResult.insertId + "");
         });
 }
-
-
 
 /**
  * @api {post} /videos/details Assign details to an uploaded video
@@ -85,34 +85,27 @@ exports.details = (req, res) => {
     mysql.connection.query(
         `select * from COURSES where id = "${req.body.course}"`, (error, response_sql) => {
             if (response_sql[0] === undefined) {
-                res.status(403).send({error: 'Course does not exist'});
+                return res.status(403).send({error: 'Course does not exist'});
             }
-            else {
-                mysql.connection.query(
-                    `select * from VIDEOS where id = "${req.body.video}"`, (error, response_sql) => {
-                        if (response_sql[0] === undefined) {
-                            res.status(403).send({error: 'Video does not exist'});
-                        }
-                        else {
-                            mysql.connection.query(`UPDATE VIDEOS SET 
-                            course = "${req.body.course}", 
-                            title = "${req.body.title}",
-                            description = "${req.body.description}" 
-                            WHERE id = "${req.body.video}"`,
-                                        (error) => {
-                                            if (error) {
-                                                res.status(500).send();
-                                            }
-                                            else {
-                                                res.status(201).send();
-                                            }
-                                        }
-
-                            );
-                        }
+            mysql.connection.query(
+                `select * from VIDEOS where id = "${req.body.video}"`, (error, response_sql) => {
+                    if (response_sql[0] === undefined) {
+                        return res.status(403).send({error: 'Video does not exist'});
                     }
-                );
-            }
+                    mysql.connection.query(`UPDATE VIDEOS SET 
+                    course = "${req.body.course}", 
+                    title = "${req.body.title}",
+                    description = "${req.body.description}" 
+                    WHERE id = "${req.body.video}"`,
+                        (error) => {
+                            if (error) {
+                                return res.status(500).send();
+                            }
+                            return res.status(201).send();
+                        }
+                    );
+                }
+            );
         }
     );
 };
@@ -129,11 +122,9 @@ exports.get_list = (req, res) => {
     mysql.connection.query(
         `select * from VIDEOS`, (error, response_sql) => {
             if (error) {
-                res.status(500).send();
+                return res.status(500).send();
             }
-            else {
-                res.status(200).send(response_sql);
-            }
+            return res.status(200).send(response_sql);
         }
     );
 }

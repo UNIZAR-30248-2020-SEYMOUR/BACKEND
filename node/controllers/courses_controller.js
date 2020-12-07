@@ -127,48 +127,39 @@ exports.delete = (req, res) => {
  */
 exports.update_course = (req, res) => {
     mysql.connection.query(
-        `select * from COURSES where id = "${req.body.id}"`,
-        (error, response_sqlCourse) => {
-            let rowCourse;
+        `select * from COURSES where id = "${req.body.id}"`, (error, courses) => {
             if (error) {
-                res.status(500).send();
+                return res.status(500).send()
             }
-            else {
-                rowCourse = response_sqlCourse[0]
-                if (rowCourse === undefined) {
-                    res.status(403).send({error: 'Course does not exist'});
-                }
-                else {
+            if (courses[0] === undefined) {
+                return res.status(403).send({error: 'Course does not exist'})
+            }
+            mysql.connection.query(
+                `select * from CATEGORIES where name = "${req.body.category}"`, (error, categories) => {
+                    if (categories[0] === undefined) {
+                        return res.status(403).send({error: 'Category does not exist'});
+                    }
                     mysql.connection.query(
-                        `select * from CATEGORIES where name = "${req.body.category}"`, (error, response_sql) => {
-                            if (response_sql[0] === undefined) {
-                                res.status(403).send({error: 'Category does not exist'});
+                        `UPDATE COURSES SET coursename = "${req.body.coursename}", 
+                            description = "${req.body.description}", category = "${req.body.category}" 
+                                WHERE id = "${req.body.id}"`, (error) => {
+                            if (error) {
+                                return res.status(500).send()
                             }
-                            else {
-                                mysql.connection.query(
-                                    `UPDATE COURSES SET coursename = "${req.body.coursename}", description = "${req.body.description}", category = "${req.body.category}" WHERE id = "${req.body.id}"`,
-                                    (error, response) => {
-                                        if (error) {
-                                            res.status(500).send()
-                                        } else {
-                                            mysql.connection.query(
-                                                `select c.id, c.coursename, c.description, cat.name, cat.imageUrl from COURSES c, CATEGORIES cat where c.id = "${req.body.id}" and c.category = cat.name`,
-                                                (error, response_sqlCourse) => {
-                                                    if (error) {
-                                                        res.status(500).send();
-                                                    } else {
-                                                        res.status(200).send(response_sqlCourse[0]);
-                                                    }
-                                                }
-                                            );
-                                        }
+                            mysql.connection.query(
+                                `select c.id, c.coursename, c.description, cat.name, cat.imageUrl from COURSES c, 
+                                    CATEGORIES cat where c.id = "${req.body.id}" and c.category = cat.name`,
+                                (error, updated) => {
+                                    if (error) {
+                                        return res.status(500).send();
                                     }
-                                );
-                            }
+                                    return res.status(200).send(updated[0]);
+                                }
+                            );
                         }
                     );
                 }
-            }
+            );
         }
     );
 };
@@ -191,25 +182,29 @@ exports.update_course = (req, res) => {
  */
 exports.get_info = (req, res) => {
     let responseData = {};
+
     mysql.connection.query(
-        `SELECT course.coursename, course.description, cat.name, cat.imageUrl FROM COURSES course, CATEGORIES cat WHERE course.id = "${req.body.id}" AND course.category = cat.name`, (error, response_sql) => {
+        `SELECT course.coursename, course.description, cat.name, cat.imageUrl FROM COURSES course, CATEGORIES cat 
+            WHERE course.id = "${req.body.id}" AND course.category = cat.name`, (error, response_sql) => {
+
             if (error) {
-                res.status(500).send();
-            } else {
-                if (response_sql[0] === undefined) {
-                    res.status(404).send({error: 'Course does not exist'});
-                }
-                else {
-                    let courseData = response_sql[0];
-                    responseData.name = courseData.coursename;
-                    responseData.description = courseData.description;
-                    let category = {};
-                    category.name = courseData.name;
-                    category.imageUrl = courseData.imageUrl;
-                    responseData.category = category;
-                    res.status(200).send(responseData);
-                }
+                return res.status(500).send();
             }
+
+            if (response_sql[0] === undefined) {
+                return res.status(404).send({error: 'Course does not exist'});
+            }
+
+            let courseData = response_sql[0];
+            responseData.name = courseData.coursename;
+            responseData.description = courseData.description;
+
+            let category = {};
+            category.name = courseData.name;
+            category.imageUrl = courseData.imageUrl;
+            responseData.category = category;
+
+            return res.status(200).send(responseData);
     });
 };
 
@@ -236,36 +231,32 @@ exports.get_videos = (req, res) => {
     mysql.connection.query(
         `SELECT id FROM COURSES WHERE id = "${req.body.id}"`, (error, response_sql) => {
             if (error) {
-                res.status(500).send();
+                return res.status(500).send();
             }
-            else if (response_sql[0] === undefined) {
-                res.status(404).send({error: 'Course does not exist'});
+            if (response_sql[0] === undefined) {
+                return res.status(404).send({error: 'Course does not exist'});
             }
-            else {
-                mysql.connection.query(
-                    `SELECT * FROM VIDEOS WHERE course = "${req.body.id}" ORDER BY id ASC`, (error, response_sql) => {
-                        if (error) {
-                            res.status(500).send();
-                        }
-                        else {
-                            let videoList = response_sql;
-                            const first = req.body.firstVideo;
-                            const last = req.body.lastVideo;
-                            let i;
-                            for (i = first-1; i < last; i++) {
-                                let currentVideo = videoList[i];
-                                if (currentVideo === undefined) { break; }
-                                let videoData = {};
-                                videoData.id = currentVideo.id;
-                                videoData.name = currentVideo.title;
-                                videoData.description = currentVideo.description;
-                                responseData.push(videoData);
-                            }
-                            res.status(200).send(responseData);
-                        }
+            mysql.connection.query(
+                `SELECT * FROM VIDEOS WHERE course = "${req.body.id}" ORDER BY id ASC`, (error, response_sql) => {
+                    if (error) {
+                        return res.status(500).send();
                     }
-                );
-            }
+                    let videoList = response_sql;
+                    const first = req.body.firstVideo;
+                    const last = req.body.lastVideo;
+                    let i;
+                    for (i = first-1; i < last; i++) {
+                        let currentVideo = videoList[i];
+                        if (currentVideo === undefined) { break; }
+                        let videoData = {};
+                        videoData.id = currentVideo.id;
+                        videoData.name = currentVideo.title;
+                        videoData.description = currentVideo.description;
+                        responseData.push(videoData);
+                    }
+                    return res.status(200).send(responseData);
+                }
+            );
         }
     );
 };

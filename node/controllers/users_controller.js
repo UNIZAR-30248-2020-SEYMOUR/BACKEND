@@ -34,29 +34,25 @@ const saltRounds=10
 
 exports.register = (req, res) => {
     if (req.body.password.length > 40) {
-        res.status(400).send()
+        return res.status(400).send()
     }
-    else {
-        let uuid = uuidv4()
-        let hashedPassword = bcrypt.hashSync(req.body.password, saltRounds)
-        mysql.connection.query(
-            `insert into USERS (uuid, username, email, password, description) values
-                    ("${uuid}", "${req.body.username}", "${req.body.email}", "${hashedPassword}", "${req.body.description}")`,
-            (error) => {
-                if (error) {
-                    if (error.code === 'ER_DUP_ENTRY') {
-                        res.status(409).send({error: error.sqlMessage});
-                    }
-                    else {
-                        res.status(500).send()
-                    }
+
+    let uuid = uuidv4()
+    let hashedPassword = bcrypt.hashSync(req.body.password, saltRounds)
+
+    mysql.connection.query(
+        `insert into USERS (uuid, username, email, password, description) values
+                ("${uuid}", "${req.body.username}", "${req.body.email}", "${hashedPassword}", "${req.body.description}")`,
+        (error) => {
+            if (error) {
+                if (error.code === 'ER_DUP_ENTRY') {
+                    return res.status(409).send({error: error.sqlMessage});
                 }
-                else {
-                    res.status(201).send({UUID: uuid});
-                }
+                return res.status(500).send()
             }
-        );
-    }
+            return res.status(201).send({UUID: uuid});
+        }
+    );
 };
 
 
@@ -89,21 +85,15 @@ exports.login = (req, res) => {
         `select password, uuid from USERS where email = "${req.body.email}"`,
         (error, response_sql) => {
             if (error) {
-                res.status(500).send();
+                return res.status(500).send();
             }
-            else {
-                row = response_sql[0]
-                if (row === undefined) {
-                    res.status(403).send({error: 'Invalid email'});
-                }
-                else {
-                    if (bcrypt.compareSync(req.body.password, row.password)) {
-                        res.status(200).send({UUID: row.uuid});
-                    } else {
-                        res.status(403).send({error: 'Invalid password'});
-                    }
-                }
+            if (response_sql[0] === undefined) {
+                return res.status(403).send({error: 'Invalid email'});
             }
+            if (bcrypt.compareSync(req.body.password, response_sql[0].password)) {
+                return res.status(200).send({UUID: response_sql[0].uuid});
+            }
+            return res.status(403).send({error: 'Invalid password'});
         }
     );
 };
@@ -117,17 +107,12 @@ exports.login = (req, res) => {
  * @apiError 500 Internal Server Error.
  */
 exports.get_list = (req, res) => {
-    mysql.connection.query(
-        `select * from USERS`,
-        (error, response_sql) => {
-            if (error) {
-                res.status(500).send();
-            }
-            else {
-                res.status(200).send(response_sql);
-            }
+    mysql.connection.query(`select * from USERS`,(error, response_sql) => {
+        if (error) {
+            return res.status(500).send();
         }
-    );
+        return res.status(200).send(response_sql);
+    });
 };
 
 /**
@@ -147,24 +132,20 @@ exports.get_list = (req, res) => {
  *       "error": "description"
  *     }
  */
-
 exports.reset_password = (req, res) => {
-    jwt.verify(req.body.token, RESET_PASSWORD_MASTERKEY, function(error, decodedData) {
-        if(error) {
+    jwt.verify(req.body.token, RESET_PASSWORD_MASTERKEY, function(error) {
+        if (error) {
             return res.status(401).send({error: 'Incorrect token or token expired'})
         }
-        else {
-            mysql.connection.query(`UPDATE USERS SET resetLink = "", password = "${req.body.newPassword}" WHERE resetLink = "${req.body.token}"`,
+        mysql.connection.query(`UPDATE USERS SET resetLink = "", password = "${req.body.newPassword}" 
+            WHERE resetLink = "${req.body.token}"`,
                 (error) => {
                     if (error) {
-                        res.status(500).send()
+                        return res.status(500).send()
                     }
-                    else {
-                        res.status(200).send();
-                    }
+                    return res.status(200).send();
                 }
-            );
-        }
+        );
     })
 };
 
@@ -189,27 +170,22 @@ exports.forgot_password = (req, res) => {
     mysql.connection.query(
         `SELECT * FROM USERS WHERE email = "${req.body.email}"`, (error, response_sql) => {
             if (error) {
-                res.status(500).send();
+                return res.status(500).send();
             }
-            else {
-                row = response_sql[0];
-                if (row === undefined) {
-                    res.status(403).send({error: 'Invalid email'});
-                }
-                else {
-                    const token = jwt.sign({_uuid: row.uuid}, RESET_PASSWORD_MASTERKEY , {expiresIn: '30m'});
-                    const emailData = {
-                        from: 'noreply.seymour@gmail.com',
-                        to: req.body.email,
-                        subject: '[SEYMOUR] Recupera tu contraseña',
-                        html: `<h2>Accede al siguiente link para recuperar tu contraseña</h2>
-                                   <p>http://91.250.180.41/#/recover-password?token=${token}</p>`
-                    };
-                    mysql.connection.query(`UPDATE USERS SET resetLink = "${token}" WHERE email = "${req.body.email}"`);
-                    nodemailer.sendEmail(emailData);
-                    res.status(200).send();
-                }
+            if (response_sql[0] === undefined) {
+                return res.status(403).send({error: 'Invalid email'});
             }
+            const token = jwt.sign({_uuid: response_sql[0].uuid}, RESET_PASSWORD_MASTERKEY , {expiresIn: '30m'});
+            const emailData = {
+                from: 'noreply.seymour@gmail.com',
+                to: req.body.email,
+                subject: '[SEYMOUR] Recupera tu contraseña',
+                html: `<h2>Accede al siguiente link para recuperar tu contraseña</h2>
+                           <p>http://91.250.180.41/#/recover-password?token=${token}</p>`
+            };
+            mysql.connection.query(`UPDATE USERS SET resetLink = "${token}" WHERE email = "${req.body.email}"`);
+            nodemailer.sendEmail(emailData);
+            return res.status(200).send();
         }
     );
 };
@@ -251,49 +227,42 @@ exports.user_profile = (req, res) => {
     let responseData = {};
     mysql.connection.query(
         `select username, description, email, rate from USERS where uuid = "${req.body.uuid}"`,
-        (error, response_sqlUser) => {
-            let rowUser;
-            if (error) {
-                res.status(500).send();
-            } else {
-                rowUser = response_sqlUser[0]
-                if (rowUser === undefined) {
-                    res.status(404).send({error: 'User does not exist'});
-                } else {
-                    responseData.username = rowUser.username;
-                    responseData.description = rowUser.description;
-                    responseData.email = rowUser.email;
-                    responseData.rate = rowUser.rate;
-                    responseData.courses = [];
-                    mysql.connection.query(
-                        `select c.id, c.coursename, c.description, cat.name, cat.imageUrl from COURSES c, CATEGORIES cat where c.owner = "${req.body.uuid}" and c.category = cat.name`,
-                        (error, response_sqlCourses) => {
-                            let rowCourse;
-                            if (error) {
-                                res.status(500).send();
-                            }
-                            else {
-                                if (response_sqlCourses.length > 0) {
-                                    for (let i = 0; i < response_sqlCourses.length; ++i) {
-                                        rowCourse = response_sqlCourses[i];
-                                        let course = {};
-                                        let category = {};
-                                        course.id = rowCourse.id;
-                                        course.coursename = rowCourse.coursename;
-                                        course.description = rowCourse.description;
-                                        category.name = rowCourse.name;
-                                        category.imageUrl = rowCourse.imageUrl;
-                                        course.category = category;
-                                        responseData.courses.push(course);
-                                    }
-                                }
-                                res.status(200).send(responseData);
-                            }
-                        }
-                    )
+            (error, response_sqlUser) => {
+                if (error) {
+                    return res.status(500).send();
                 }
+                if (response_sqlUser[0] === undefined) {
+                    return res.status(404).send({error: 'User does not exist'});
+                }
+                responseData.username = response_sqlUser[0].username;
+                responseData.description = response_sqlUser[0].description;
+                responseData.email = response_sqlUser[0].email;
+                responseData.rate = response_sqlUser[0].rate;
+                responseData.courses = [];
+                mysql.connection.query(
+                    `select c.id, c.coursename, c.description, cat.name, cat.imageUrl from COURSES c, CATEGORIES cat 
+                        where c.owner = "${req.body.uuid}" and c.category = cat.name`,
+                        (error, response_sqlCourses) => {
+                            if (error) {
+                                return res.status(500).send();
+                            }
+                            if (response_sqlCourses.length > 0) {
+                                for (let i = 0; i < response_sqlCourses.length; ++i) {
+                                    let course = {};
+                                    let category = {};
+                                    course.id = response_sqlCourses[i].id;
+                                    course.coursename = response_sqlCourses[i].coursename;
+                                    course.description = response_sqlCourses[i].description;
+                                    category.name = response_sqlCourses[i].name;
+                                    category.imageUrl = response_sqlCourses[i].imageUrl;
+                                    course.category = category;
+                                    responseData.courses.push(course);
+                                }
+                            }
+                            return res.status(200).send(responseData);
+                        }
+                )
             }
-        }
     );
 };
 
@@ -335,48 +304,43 @@ exports.get_user = (req, res) => {
     mysql.connection.query(
         `select username, description, email, rate, uuid from USERS where username = "${req.body.username}"`,
         (error, response_sqlUser) => {
-            let rowUser;
             if (error) {
-                res.status(500).send();
-            } else {
-                rowUser = response_sqlUser[0]
-                if (rowUser === undefined) {
-                    res.status(404).send({error: 'User does not exist'});
-                } else {
-                    responseData.username = rowUser.username;
-                    responseData.description = rowUser.description;
-                    responseData.email = rowUser.email;
-                    responseData.rate = rowUser.rate;
-                    responseData.courses = [];
-                    let uuid = rowUser.uuid;
-                    mysql.connection.query(
-                        `select c.id, c.coursename, c.description, cat.name, cat.imageUrl from COURSES c, CATEGORIES cat where c.owner = "${uuid}" and c.category = cat.name`,
+                return res.status(500).send();
+            }
+            if (response_sqlUser[0] === undefined) {
+                return res.status(404).send({error: 'User does not exist'});
+            }
+            responseData.username = response_sqlUser[0].username;
+            responseData.description = response_sqlUser[0].description;
+            responseData.email = response_sqlUser[0].email;
+            responseData.rate = response_sqlUser[0].rate;
+            responseData.courses = [];
+            let uuid = response_sqlUser[0].uuid;
+            mysql.connection.query(
+                `select c.id, c.coursename, c.description, cat.name, cat.imageUrl from COURSES c, CATEGORIES cat 
+                    where c.owner = "${uuid}" and c.category = cat.name`,
                         (error, response_sqlCourses) => {
                             let rowCourse;
                             if (error) {
-                                res.status(500).send();
+                                return res.status(500).send();
                             }
-                            else {
-                                if (response_sqlCourses.length > 0) {
-                                    for (let i = 0; i < response_sqlCourses.length; ++i) {
-                                        rowCourse = response_sqlCourses[i];
-                                        let course = {};
-                                        let category = {};
-                                        course.id = rowCourse.id;
-                                        course.coursename = rowCourse.coursename;
-                                        course.description = rowCourse.description;
-                                        category.name = rowCourse.name;
-                                        category.imageUrl = rowCourse.imageUrl;
-                                        course.category = category;
-                                        responseData.courses.push(course);
-                                    }
+                            if (response_sqlCourses.length > 0) {
+                                for (let i = 0; i < response_sqlCourses.length; ++i) {
+                                    rowCourse = response_sqlCourses[i];
+                                    let course = {};
+                                    let category = {};
+                                    course.id = rowCourse.id;
+                                    course.coursename = rowCourse.coursename;
+                                    course.description = rowCourse.description;
+                                    category.name = rowCourse.name;
+                                    category.imageUrl = rowCourse.imageUrl;
+                                    course.category = category;
+                                    responseData.courses.push(course);
                                 }
-                                res.status(200).send(responseData);
                             }
+                            return res.status(200).send(responseData);
                         }
-                    )
-                }
-            }
+            )
         }
     );
 };
@@ -402,13 +366,13 @@ exports.delete = (req, res) => {
         `delete from USERS where uuid = "${req.body.uuid}"`,
         (error, response_sql) => {
             if (error) {
-                res.status(500).send();
+                return res.status(500).send();
             }
-            else if (response_sql.affectedRows === 1){
-                res.status(204).send();
+            if (response_sql.affectedRows === 1){
+                return res.status(204).send();
             }
-            else if (response_sql.affectedRows === 0){
-                res.status(404).send();
+            if (response_sql.affectedRows === 0){
+                return res.status(404).send();
             }
         }
     );
@@ -447,42 +411,34 @@ exports.delete = (req, res) => {
 exports.update_profile = (req, res) => {
     mysql.connection.query(
         `select username, description, email from USERS where uuid = "${req.body.uuid}"`,
-        (error, response_sqlUser) => {
-            let rowUser;
-            if (error) {
-                res.status(500).send();
-            } else {
-                rowUser = response_sqlUser[0]
-                if (rowUser === undefined) {
-                    res.status(404).send({error: 'User does not exist'});
-                } else {
-                    mysql.connection.query(
-                        `UPDATE USERS SET username = "${req.body.username}", description = "${req.body.description}", email = "${req.body.email}" WHERE uuid = "${req.body.uuid}"`,
-                        (error) => {
-                            if (error) {
-                                if (error.code === 'ER_DUP_ENTRY') {
-                                    res.status(409).send({error: error.sqlMessage});
+            (error, response_sqlUser) => {
+                if (error) {
+                    return res.status(500).send();
+                }
+                if (response_sqlUser[0] === undefined) {
+                    return res.status(404).send({error: 'User does not exist'});
+                }
+                mysql.connection.query(
+                    `UPDATE USERS SET username = "${req.body.username}", description = "${req.body.description}", 
+                        email = "${req.body.email}" WHERE uuid = "${req.body.uuid}"`,
+                            (error) => {
+                                if (error) {
+                                    if (error.code === 'ER_DUP_ENTRY') {
+                                        return res.status(409).send({error: error.sqlMessage});
+                                    }
+                                    return res.status(500).send()
                                 }
-                                else {
-                                    res.status(500).send()
-                                }
-                            }
-                            else {
                                 mysql.connection.query(
                                     `select * from USERS where uuid = "${req.body.uuid}"`,
                                     (error, response_sqlUser) => {
                                         if (error) {
-                                            res.status(500).send();
-                                        } else {
-                                            res.status(200).send(response_sqlUser[0]);
+                                            return res.status(500).send();
                                         }
+                                        return res.status(200).send(response_sqlUser[0]);
                                     }
                                 );
                             }
-                        }
-                    );
-                }
-            }
+                );
         }
     );
 }
@@ -514,22 +470,19 @@ exports.search = (req, res) => {
         `select uuid, username, description from USERS where username LIKE "%${req.body.textToSearch}%"`,
         (error, response_sql) => {
             if (error) {
-                res.status(500).send();
+                return res.status(500).send();
             }
-            else {
-                let responseData = [];
-                if (response_sql.length > 0) {
-                    for (let i = 0; i < response_sql.length; ++i) {
-                        rowUser = response_sql[i];
-                        let user = {};
-                        user.uuid = rowUser.uuid;
-                        user.username = rowUser.username;
-                        user.description = rowUser.description;
-                        responseData.push(user);
-                    }
+            let responseData = [];
+            if (response_sql.length > 0) {
+                for (let i = 0; i < response_sql.length; ++i) {
+                    let user = {};
+                    user.uuid = response_sql[i].uuid;
+                    user.username = response_sql[i].username;
+                    user.description = response_sql[i].description;
+                    responseData.push(user);
                 }
-                res.status(200).send(responseData);
             }
+            return res.status(200).send(responseData);
         }
     );
 };
