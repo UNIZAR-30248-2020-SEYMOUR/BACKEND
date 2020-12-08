@@ -958,6 +958,114 @@ describe('Unit testing', () => {
         })
     });
 
+    describe('Successful Rate a video', () => {
+        it('Should rate a video and return 201 with the rate number', (done) => {
+            chai.request(app)
+                .post('/videos/rate')
+                .send(
+                    {
+                        'uuid': UUID,
+                        'video' : videoInsertId,
+                        'rate': 4,
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(201);
+                    expect(res.body).to.have.property('rate').to.be.equal(4);
+                    done();
+                })
+        })
+    });
+
+    describe('Successful Rate a video again', () => {
+        it('Should update the rate of a video and return 201 with the rate number', (done) => {
+            chai.request(app)
+                .post('/videos/rate')
+                .send(
+                    {
+                        'uuid': UUID,
+                        'video' : videoInsertId,
+                        'rate': 5,
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(201);
+                    expect(res.body).to.have.property('rate').to.be.equal(5);
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful Rate a video (invalid uuid)', () => {
+        it('Should NOT update the rate of a video and return 404', (done) => {
+            chai.request(app)
+                .post('/videos/rate')
+                .send(
+                    {
+                        'uuid': 'lololo',
+                        'video' : videoInsertId,
+                        'rate': 4124124,
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(404);
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful Rate a video (invalid video)', () => {
+        it('Should NOT update the rate of a video and return 404', (done) => {
+            chai.request(app)
+                .post('/videos/rate')
+                .send(
+                    {
+                        'uuid': UUID,
+                        'video' : 'lalala',
+                        'rate': 4124124,
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(404);
+                    done();
+                })
+        })
+    });
+
+    describe('Successful get the course rate', () => {
+        it('Should get the updated course rate', (done) => {
+            chai.request(app)
+                .post('/courses/get_info')
+                .send(
+                    {
+                        'id': 1
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.property('rate').to.be.equal(5);
+                    done();
+                })
+        })
+    });
+
+    describe('Successful get the user rate', () => {
+        it('Should get the updated user rate', (done) => {
+            chai.request(app)
+                .post('/users/get_user')
+                .send(
+                    {
+                        'username': 'integration_user_mod'
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.property('rate').to.be.equal(5);
+                    done();
+                })
+        })
+    });
+
     describe('Successful Get Videos of a course (1)', () => {
             it('Should get 1 video and return 200', (done) => {
                 chai.request(app)
@@ -974,21 +1082,18 @@ describe('Unit testing', () => {
             })
         });
 
-        describe('Successful get all videos', () => {
-            it('Should get all videos and return 200', (done) => {
-                chai.request(app)
-                    .post('/videos/get_list')
-                    .send()
-                    .end(function(err, res) {
-                        expect(res).to.have.status(200);
-                        expect(res.body).to.have.length(1);
-                        done();
-                    })
-            })
-        });
-
-
-    // END
+    describe('Successful get all videos', () => {
+        it('Should get all videos and return 200', (done) => {
+            chai.request(app)
+                .post('/videos/get_list')
+                .send()
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.length(1);
+                    done();
+                })
+        })
+    });
 
     describe('Successful Delete Course', () => {
         it('Should delete the course and return 204', (done) => {
@@ -1122,7 +1227,6 @@ describe('Unit testing', () => {
                 })
         });
     });
-
 
     after(function(){
         process.exit(0)

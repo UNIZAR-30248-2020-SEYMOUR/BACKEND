@@ -167,7 +167,7 @@ exports.get_info = (req, res) => {
     let responseData = {};
 
     mysql.connection.query(
-        `SELECT course.coursename, course.description, cat.name, cat.imageUrl FROM COURSES course, CATEGORIES cat 
+        `SELECT course.coursename, course.description, cat.name, cat.imageUrl, course.rate FROM COURSES course, CATEGORIES cat 
             WHERE course.id = "${req.body.id}" AND course.category = cat.name`, (error, response_sql) => {
 
             if (response_sql[0] === undefined) {
@@ -177,6 +177,7 @@ exports.get_info = (req, res) => {
             let courseData = response_sql[0];
             responseData.name = courseData.coursename;
             responseData.description = courseData.description;
+            responseData.rate = courseData.rate;
 
             let category = {};
             category.name = courseData.name;
@@ -225,6 +226,7 @@ exports.get_videos = (req, res) => {
                         videoData.id = currentVideo.id;
                         videoData.name = currentVideo.title;
                         videoData.description = currentVideo.description;
+                        videoData.rate = currentVideo.rate;
                         responseData.push(videoData);
                     }
                     return res.status(200).send(responseData);
