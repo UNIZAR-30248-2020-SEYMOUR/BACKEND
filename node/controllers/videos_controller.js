@@ -106,7 +106,7 @@ exports.details = (req, res) => {
 
 /**
  * @api {post} /videos/get_list Get videos
- * @apiName Get videos
+ * @apiName Get all videos
  * @apiGroup Video
  *
  * @apiSuccess OK Get videos successful.
@@ -116,6 +116,39 @@ exports.get_list = (req, res) => {
     mysql.connection.query(
         `select * from VIDEOS`, (error, response_sql) => {
             return res.status(200).send(response_sql);
+        }
+    );
+}
+
+/**
+ * @api {post} /videos/get_video Get information of a video
+ * @apiName Get one video
+ * @apiGroup Video
+ * @apiParam {Integer} video Video id.
+ *
+ * @apiSuccess 200 OK. Get video successful.
+ * @apiError 404 If video not found.
+ * @apiError 500 Internal Server Error.
+ */
+exports.get_video = (req, res) => {
+    let videoData = {};
+    mysql.connection.query(
+        `select * from VIDEOS WHERE id=${req.body.id}`, (error, video) => {
+            if (video[0] === undefined) {
+                return res.status(404).send();
+            }
+            videoData.id=video[0].id;
+            videoData.title=video[0].title;
+            videoData.description=video[0].description;
+            videoData.course=video[0].course;
+            videoData.location=video[0].location;
+            videoData.rate=video[0].rate;
+            mysql.connection.query(
+                `select * from USER_COMMENTS WHERE id_video=${req.body.id}`, (error, comments) => {
+                    videoData.comments=comments;
+                    return res.status(200).json(videoData);
+                }
+            );
         }
     );
 }
@@ -152,6 +185,36 @@ exports.rate = (req, res) => {
                     mysql.connection.query( `SELECT rate FROM VIDEOS WHERE id=${req.body.video}`, (error, response) => {
                         return res.status(201).send(response[0])
                     });
+            });
+        });
+    });
+}
+
+/**
+ * @api {post} /videos/comment Comment one video
+ * @apiName Comment video
+ * @apiGroup Video
+ *
+ * @apiParam {Integer} video Identificator of the video which is being commented.
+ * @apiParam {String} uuid Identificator of the user who is commenting.
+ * @apiParam {String} comment Text to comment.
+ *
+ * @apiSuccess 201 OK.
+ * @apiError 404 User or video does not exist.
+ * @apiError 500 Internal Server Error.
+ */
+exports.comment = (req, res) => {
+    mysql.connection.query( `SELECT * FROM USERS WHERE uuid="${req.body.uuid}"`, (error, response) => {
+        if(response[0] === undefined) {
+            return res.status(404).send("User does not exist")
+        }
+        mysql.connection.query( `SELECT * FROM VIDEOS WHERE id="${req.body.video}"`, (error, response) => {
+            if(response[0] === undefined) {
+                return res.status(404).send("Video does not exist")
+            }
+            mysql.connection.query( `INSERT INTO USER_COMMENTS (id_user, id_video, comment) VALUES("${req.body.uuid}", 
+                "${req.body.video}", "${req.body.comment}")`, () => {
+                    return res.status(201).send()
             });
         });
     });

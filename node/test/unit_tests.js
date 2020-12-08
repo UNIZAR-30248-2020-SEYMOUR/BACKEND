@@ -1032,6 +1032,23 @@ describe('Unit testing', () => {
         })
     });
 
+    describe('Successful get the video rate', () => {
+        it('Should get the updated course rate', (done) => {
+            chai.request(app)
+                .post('/videos/get_video')
+                .send(
+                    {
+                        'id': videoInsertId
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.property('rate').to.be.equal(5);
+                    done();
+                })
+        })
+    });
+
     describe('Successful get the course rate', () => {
         it('Should get the updated course rate', (done) => {
             chai.request(app)
@@ -1090,6 +1107,96 @@ describe('Unit testing', () => {
                 .end(function(err, res) {
                     expect(res).to.have.status(200);
                     expect(res.body).to.have.length(1);
+                    done();
+                })
+        })
+    });
+
+    describe('Successful Comment a video', () => {
+        it('Should comment a video and return 201', (done) => {
+            chai.request(app)
+                .post('/videos/comment')
+                .send(
+                    {
+                        'uuid': UUID,
+                        'video' : videoInsertId,
+                        'comment': 'nice video guy',
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(201);
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful Comment a video', () => {
+        it('Should NOT comment a video and return 404 (invalid user)', (done) => {
+            chai.request(app)
+                .post('/videos/comment')
+                .send(
+                    {
+                        'uuid': 'lelele',
+                        'video' : videoInsertId,
+                        'comment': 'nice video guy',
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(404);
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful Comment a video', () => {
+        it('Should NOT comment a video and return 404 (invalid video)', (done) => {
+            chai.request(app)
+                .post('/videos/comment')
+                .send(
+                    {
+                        'uuid': UUID,
+                        'video' : 'lililili',
+                        'comment': 'nice video guy',
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(404);
+                    done();
+                })
+        })
+    });
+
+    describe('Successful get one video information', () => {
+        it('Should get the video and return 200', (done) => {
+            chai.request(app)
+                .post('/videos/get_video')
+                .send(
+                    {
+                        'id': videoInsertId
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.property('id').to.be.equal(1);
+                    expect(res.body).to.have.property('title').to.be.equal('test title');
+                    expect(res.body).to.have.property('description').to.be.equal('this is just a video for testing');
+                    expect(res.body.comments).to.have.length(1);
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful get one video information', () => {
+        it('Should NOT get the video and return 404', (done) => {
+            chai.request(app)
+                .post('/videos/get_video')
+                .send(
+                    {
+                        'id': 1241209
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(404);
                     done();
                 })
         })
