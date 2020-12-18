@@ -140,7 +140,11 @@ exports.get_video = (req, res) => {
             videoData.id=video[0].id;
             videoData.title=video[0].title;
             videoData.description=video[0].description;
-            videoData.course=video[0].course;
+            mysql.connection.query(
+                `select * from COURSE WHERE id_video=${video[0].course}`, (error, courses) => {
+                    videoData.owner=courses[0].owner;
+                }
+            );
             videoData.location=video[0].location;
             videoData.rate=video[0].rate;
             mysql.connection.query(
@@ -219,3 +223,5 @@ exports.comment = (req, res) => {
         });
     });
 }
+
+// get info (param id) me devuelves title, description, userNameOwnerVideo, url
