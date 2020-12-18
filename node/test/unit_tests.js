@@ -852,6 +852,19 @@ describe('Unit testing', () => {
         })
     });
 
+    describe('Successful accessing video', () => {
+        it('Should return 200', (done) => {
+            chai.request(app)
+                .get('/videos/viddeo-test.mp4')
+                .send()
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    done();
+                })
+        })
+    });
+
+
     let videoInsertId = undefined;
     describe('Successful Upload a Video into a Course', () => {
         it('Should upload a video and return 201', (done) => {
