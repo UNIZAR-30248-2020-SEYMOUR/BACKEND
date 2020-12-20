@@ -1216,6 +1216,49 @@ describe('Unit testing', () => {
         })
     });
 
+    describe('Successful Course Search (All categories)', () => {
+        it('Should get the course and return 200', (done) => {
+            chai.request(app)
+                .post('/courses/search')
+                .send(
+                    {
+                        'textToSearch': 'test'
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body[0]).to.have.deep.property('id');
+                    expect(res.body[0]).to.have.deep.property('coursename');
+                    expect(res.body[0]).to.have.deep.property('description');
+                    expect(res.body[0]).to.have.deep.property('category');
+                    expect(res.body).to.have.length(1);
+                    done();
+                })
+        })
+    });
+
+    describe('Successful Course Search (Using category field)', () => {
+        it('Should get the course and return 200', (done) => {
+            chai.request(app)
+                .post('/courses/search')
+                .send(
+                    {
+                        'textToSearch': 'test',
+                        'category' : 'Software'
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    expect(res.body[0]).to.have.deep.property('id');
+                    expect(res.body[0]).to.have.deep.property('coursename');
+                    expect(res.body[0]).to.have.deep.property('description');
+                    expect(res.body[0]).to.have.deep.property('category');
+                    expect(res.body).to.have.length(1);
+                    done();
+                })
+        })
+    });
+
     describe('Successful Delete Course', () => {
         it('Should delete the course and return 204', (done) => {
             chai.request(app)
@@ -1347,49 +1390,6 @@ describe('Unit testing', () => {
                     done();
                 })
         });
-    });
-
-    describe('Successful Course Search (All categories)', () => {
-        it('Should get the course and return 200', (done) => {
-            chai.request(app)
-                .post('/courses/search')
-                .send(
-                    {
-                        'textToSearch': 'test'
-                    }
-                )
-                .end(function(err, res) {
-                    expect(res).to.have.status(200);
-                    expect(res.body[0]).to.have.deep.property('id');
-                    expect(res.body[0]).to.have.deep.property('coursename');
-                    expect(res.body[0]).to.have.deep.property('description');
-                    expect(res.body[0]).to.have.deep.property('category');
-                    expect(res.body).to.have.length(1);
-                    done();
-                })
-        })
-    });
-
-    describe('Successful Course Search (Using category field)', () => {
-        it('Should get the course and return 200', (done) => {
-            chai.request(app)
-                .post('/courses/search')
-                .send(
-                    {
-                        'textToSearch': 'test',
-                        'category' : 'Marketing'
-                    }
-                )
-                .end(function(err, res) {
-                    expect(res).to.have.status(200);
-                    expect(res.body[0]).to.have.deep.property('id');
-                    expect(res.body[0]).to.have.deep.property('coursename');
-                    expect(res.body[0]).to.have.deep.property('description');
-                    expect(res.body[0]).to.have.deep.property('category');
-                    expect(res.body).to.have.length(1);
-                    done();
-                })
-        })
     });
 
     after(function(){
