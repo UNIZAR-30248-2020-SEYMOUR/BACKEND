@@ -34,7 +34,7 @@ exports.upload = (req, res) => {
     if(req.files.video.size > 200000000) {
         return res.status(400).send({error: 'Video must not exceed 200 MiB'});
     }
-    let pathname = __dirname + '/../videos/' + new Date().getTime();
+    let pathname = 'videos/' + new Date().getTime();
     req.files.video.mv(pathname, function (err) {
         if (err) {
             return res.send().status(500);
