@@ -263,10 +263,10 @@ exports.get_videos = (req, res) => {
 exports.search = (req, res) => {
     let sqlRequest = "";
     if (req.body.category == null) {
-        sqlRequest = `select id, coursename, category description from COURSES WHERE coursename LIKE "%${req.body.textToSearch}%"`
+        sqlRequest = `select id, coursename, category, description from COURSES WHERE coursename LIKE "%${req.body.textToSearch}%"`
     }
     else {
-        sqlRequest = `select id, coursename, category description from COURSES WHERE coursename LIKE "%${req.body.textToSearch}%" AND category = "${req.body.category}"`
+        sqlRequest = `select id, coursename, category, description from COURSES WHERE coursename LIKE "%${req.body.textToSearch}%" AND category = "${req.body.category}"`
     }
     mysql.connection.query(
         sqlRequest,
