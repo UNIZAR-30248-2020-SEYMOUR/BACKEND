@@ -142,7 +142,11 @@ exports.get_video = (req, res) => {
             videoData.description=video[0].description;
             mysql.connection.query(
                 `select * from COURSE WHERE id_video=${video[0].course}`, (error, courses) => {
-                    videoData.owner=courses[0].owner;
+                    if(error) {
+			console.log(error);	
+		    } else {
+			 videoData.owner=courses[0].owner;
+		    }
                 }
             );
             videoData.location=video[0].location;
