@@ -134,19 +134,17 @@ exports.get_video = (req, res) => {
     let videoData = {};
     mysql.connection.query(
         `select * from VIDEOS WHERE id=${req.body.id}`, (error, video) => {
+
             if (video[0] === undefined) {
                 return res.status(404).send();
             }
             videoData.id=video[0].id;
             videoData.title=video[0].title;
             videoData.description=video[0].description;
+	    videoData.course=video[0].course;
             mysql.connection.query(
-                `select * from COURSE WHERE id_video=${video[0].course}`, (error, courses) => {
-                    if(error) {
-			console.log(error);	
-		    } else {
-			 videoData.owner=courses[0].owner;
-		    }
+                `select * from COURSES WHERE id=${video[0].course}`, (error, courses) => {
+			 videoData.owner=courses[0].ownner;
                 }
             );
             videoData.location=video[0].location;
