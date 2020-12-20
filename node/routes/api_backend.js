@@ -25,6 +25,7 @@ router.post('/courses/update_course', coursesController.update_course)
 router.post('/courses/get_list', coursesController.get_list)
 router.post('/courses/get_info', coursesController.get_info)
 router.post('/courses/get_videos', coursesController.get_videos)
+router.post('/courses/search', coursesController.search)
 
 
 // CATEGORIES
