@@ -143,7 +143,7 @@ exports.get_video = (req, res) => {
             videoData.description=video[0].description;
 	    videoData.course=video[0].course;
             mysql.connection.query(
-                `select * from COURSES WHERE id=${video[0].course}`, (error, courses) => {
+                `select * from USERS where uuid IN (select * from COURSES where id=${video[0].course})`, (error, courses) => {
 			 videoData.owner=courses[0].ownner;
                 }
             );
