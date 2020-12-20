@@ -236,5 +236,56 @@ exports.get_videos = (req, res) => {
     );
 };
 
+/**
+ * @api {post} /courses/search Search for a course
+ * @apiName Search course
+ * @apiGroup Course
+ *
+ * @apiParam {String} textToSearch Text.
+ * @apiParam {String} category Category.
+ *
+ * @apiSuccess 200 OK.
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "id": "2",
+ *       "coursename": "Course 1",
+ *       "description": "My course description",
+ *       "category" : "Software"
+ *     }
+ * @apiError 500 Internal Server Error.
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 500 Not Found
+ *     {
+ *       "error": "description"
+ *     }
+ */
+exports.search = (req, res) => {
+    let sqlRequest = "";
+    if (req.body.category == null) {
+        sqlRequest = `select id, coursename, category description from COURSES WHERE coursename LIKE "%${req.body.textToSearch}%"`
+    }
+    else {
+        sqlRequest = `select id, coursename, category description from COURSES WHERE coursename LIKE "%${req.body.textToSearch}%" AND category = "${req.body.category}"`
+    }
+    mysql.connection.query(
+        sqlRequest,
+        (error, response_sql) => {
+            let responseData = [];
+            if (response_sql.length > 0) {
+                for (let i = 0; i < response_sql.length; ++i) {
+                    let course = {};
+                    course.id = response_sql[i].id;
+                    course.coursename = response_sql[i].coursename;
+                    course.description = response_sql[i].description;
+                    course.category = response_sql[i].category;
+                    responseData.push(course);
+                }
+            }
+            return res.status(200).send(responseData);
+        }
+    );
+};
+
 
 
