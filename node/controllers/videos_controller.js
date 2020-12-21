@@ -150,7 +150,7 @@ exports.get_video = (req, res) => {
             videoData.location=video[0].location;
             videoData.rate=video[0].rate;
             mysql.connection.query(
-                `select * from USER_COMMENTS WHERE id_video=${req.body.id}`, (error, comments) => {
+                `select u.username, c.comment from USER_COMMENTS c, USERS u WHERE c.id_video=${req.body.id} AND u.UUID=c.id_user`, (error, comments) => {
                     videoData.comments=comments;
                     return res.status(200).json(videoData);
                 }
