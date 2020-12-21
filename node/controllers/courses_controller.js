@@ -251,7 +251,10 @@ exports.get_videos = (req, res) => {
  *       "id": "2",
  *       "coursename": "Course 1",
  *       "description": "My course description",
- *       "category" : "Software"
+ *       "category" : {
+ *           "name" : "Software",
+ *           "imageUrl" : "assets/img/categories/software.jpg"
+ *       }
  *     }
  * @apiError 500 Internal Server Error.
  * @apiErrorExample {json} Error-Response:
@@ -262,11 +265,11 @@ exports.get_videos = (req, res) => {
  */
 exports.search = (req, res) => {
     let sqlRequest = "";
-    if (req.body.category == null) {
-        sqlRequest = `select id, coursename, category, description from COURSES WHERE coursename LIKE "%${req.body.textToSearch}%"`
+    if (req.body.category === "") {
+        sqlRequest = `select course.id, course.coursename, course.category, course.description, cat.imageUrl, cat.name from COURSES course, CATEGORIES cat WHERE course.coursename LIKE "%${req.body.textToSearch}%" AND cat.name = course.category`
     }
     else {
-        sqlRequest = `select id, coursename, category, description from COURSES WHERE coursename LIKE "%${req.body.textToSearch}%" AND category = "${req.body.category}"`
+        sqlRequest = `select course.id, course.coursename, course.category, course.description, cat.imageUrl, cat.name from COURSES course, CATEGORIES cat WHERE course.coursename LIKE "%${req.body.textToSearch}%" AND cat.name = course.category AND course.category = "${req.body.category}"`
     }
     mysql.connection.query(
         sqlRequest,
@@ -274,11 +277,15 @@ exports.search = (req, res) => {
             let responseData = [];
             if (response_sql.length > 0) {
                 for (let i = 0; i < response_sql.length; ++i) {
+                    let courseData = response_sql[i];
                     let course = {};
                     course.id = response_sql[i].id;
-                    course.coursename = response_sql[i].coursename;
-                    course.description = response_sql[i].description;
-                    course.category = response_sql[i].category;
+                    course.coursename = courseData.coursename;
+                    course.description = courseData.description;
+                    let category = {};
+                        category.name = courseData.name;
+                    category.imageUrl = courseData.imageUrl;
+                    course.category = category;
                     responseData.push(course);
                 }
             }

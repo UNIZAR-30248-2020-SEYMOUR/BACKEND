@@ -1222,7 +1222,8 @@ describe('Unit testing', () => {
                 .post('/courses/search')
                 .send(
                     {
-                        'textToSearch': 'test'
+                        'textToSearch': 'test',
+                        'category' : ''
                     }
                 )
                 .end(function(err, res) {
