@@ -855,7 +855,7 @@ describe('Unit testing', () => {
     describe('Successful accessing video', () => {
         it('Should return 200', (done) => {
             chai.request(app)
-                .get('/videos/viddeo-test.mp4')
+                .get('/videos/video-test.mp4')
                 .send()
                 .end(function(err, res) {
                     expect(res).to.have.status(200);
@@ -864,18 +864,16 @@ describe('Unit testing', () => {
         })
     });
 
-
-    let videoInsertId = undefined;
     describe('Successful Upload a Video into a Course', () => {
-        it('Should upload a video and return 201', (done) => {
+        it('Should upload a video and return 201',  (done) => {
             chai.request(app)
-                .post('/videos/upload_test')
-                .send()
+                .post('/videos/upload')
+                .set('content-type', 'multipart/form-data')
+                .attach('video', fs.readFileSync('video-test.mp4'), 'video-test.mp4')
                 .end(function(err, res) {
                     expect(res).to.have.status(201);
-                    videoInsertId = res.text;
                     done();
-                })
+                });
         })
     });
 
@@ -901,7 +899,7 @@ describe('Unit testing', () => {
                 .send(
                     {
                         'course': 1,
-                        'video' : videoInsertId,
+                        'video' : 1,
                         'title': 'test title',
                         'description': 'this is just a video for testing',
                     }
@@ -921,7 +919,7 @@ describe('Unit testing', () => {
                 .send(
                     {
                         'course': 'does_not_exists',
-                        'video' : videoInsertId,
+                        'video' : 1,
                         'title': 'test title',
                         'description': 'this is just a video for testing',
                     }
@@ -959,7 +957,7 @@ describe('Unit testing', () => {
                 .send(
                     {
                         'course': 1,
-                        'video' : videoInsertId,
+                        'video' : 1,
                         'title': 'LONGLONGLONGLONGLONGLONGLLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONG',
                         'description': 'this is just a video for testing',
                     }
@@ -978,7 +976,7 @@ describe('Unit testing', () => {
                 .send(
                     {
                         'uuid': UUID,
-                        'video' : videoInsertId,
+                        'video' : 1,
                         'rate': 4,
                     }
                 )
@@ -997,7 +995,7 @@ describe('Unit testing', () => {
                 .send(
                     {
                         'uuid': UUID,
-                        'video' : videoInsertId,
+                        'video' : 1,
                         'rate': 5,
                     }
                 )
@@ -1016,7 +1014,7 @@ describe('Unit testing', () => {
                 .send(
                     {
                         'uuid': 'lololo',
-                        'video' : videoInsertId,
+                        'video' : 1,
                         'rate': 4124124,
                     }
                 )
@@ -1040,23 +1038,6 @@ describe('Unit testing', () => {
                 )
                 .end(function(err, res) {
                     expect(res).to.have.status(404);
-                    done();
-                })
-        })
-    });
-
-    describe('Successful get the video rate', () => {
-        it('Should get the updated course rate', (done) => {
-            chai.request(app)
-                .post('/videos/get_video')
-                .send(
-                    {
-                        'id': videoInsertId
-                    }
-                )
-                .end(function(err, res) {
-                    expect(res).to.have.status(200);
-                    expect(res.body).to.have.property('rate').to.be.equal(5);
                     done();
                 })
         })
@@ -1132,7 +1113,7 @@ describe('Unit testing', () => {
                 .send(
                     {
                         'uuid': UUID,
-                        'video' : videoInsertId,
+                        'video' : 1,
                         'comment': 'nice video guy',
                     }
                 )
@@ -1150,7 +1131,7 @@ describe('Unit testing', () => {
                 .send(
                     {
                         'uuid': 'lelele',
-                        'video' : videoInsertId,
+                        'video' : 1,
                         'comment': 'nice video guy',
                     }
                 )
@@ -1185,7 +1166,7 @@ describe('Unit testing', () => {
                 .post('/videos/get_video')
                 .send(
                     {
-                        'id': videoInsertId
+                        'id': 1
                     }
                 )
                 .end(function(err, res) {
@@ -1193,7 +1174,8 @@ describe('Unit testing', () => {
                     expect(res.body).to.have.property('id').to.be.equal(1);
                     expect(res.body).to.have.property('title').to.be.equal('test title');
                     expect(res.body).to.have.property('description').to.be.equal('this is just a video for testing');
-                    expect(res.body).to.have.property('owner').to.be.equal(UUID);
+                    expect(res.body).to.have.property('owner').to.be.equal('integration_user_mod');
+                    expect(res.body).to.have.property('rate').to.be.equal(5);
                     expect(res.body.comments).to.have.length(1);
                     done();
                 })

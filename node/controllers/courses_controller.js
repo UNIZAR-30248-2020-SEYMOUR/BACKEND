@@ -1,4 +1,5 @@
 const mysql = require('../database/mysql');
+const fs = require('fs');
 
 
 /**
@@ -227,7 +228,7 @@ exports.get_videos = (req, res) => {
                         videoData.name = currentVideo.title;
                         videoData.description = currentVideo.description;
                         videoData.rate = currentVideo.rate;
-                        videoData.imagePreview = currentVideo.imagePreview;
+                        videoData.imagePreview=base64_encode(currentVideo.imagePreview);
                         responseData.push(videoData);
                     }
                     return res.status(200).send(responseData);
@@ -297,3 +298,11 @@ exports.search = (req, res) => {
 
 
 
+
+// function to encode file data to base64 encoded string: imagePreviews
+function base64_encode(file) {
+    // read binary data
+    const bitmap = fs.readFileSync(file);
+    // convert binary data to base64 encoded string
+    return new Buffer.from(bitmap).toString('base64');
+}

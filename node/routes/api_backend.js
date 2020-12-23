@@ -37,9 +37,7 @@ router.post('/videos/upload', videosController.upload)
 router.post('/videos/details', videosController.details)
 router.post('/videos/get_list', videosController.get_list)
 router.post('/videos/get_video', videosController.get_video)
-router.post('/videos/upload_test', videosController.upload_test) // WARNING: Only for testing purposes!!
 router.post('/videos/rate', videosController.rate)
 router.post('/videos/comment', videosController.comment)
-
 
 module.exports = router

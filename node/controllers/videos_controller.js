@@ -1,5 +1,7 @@
 const mysql = require('../database/mysql');
 const extractFrames = require('ffmpeg-extract-frames')
+const fs = require('fs');
+
 
 /**
  * @api {post} /videos/upload Upload a video to a course
@@ -22,7 +24,7 @@ const extractFrames = require('ffmpeg-extract-frames')
  *       "error": "description"
  *     }
  */
-exports.upload = async (req, res) => {
+exports.upload = (req, res) => {
     if (!req.files) {
         return res.status(400).send({error: 'No video uploaded'});
     }
@@ -44,27 +46,19 @@ exports.upload = async (req, res) => {
 
     // Storing imagePreview
     let imagePreviewPathname = 'imagePreview/' + name;
-    await extractFrames({
+    extractFrames({
         input: videoPathname,
         output: imagePreviewPathname,
         offsets: [0] // Extract first frame
-    })
+    }).then()
 
     // Storing the paths in the database
     mysql.connection.query(
-        `insert into VIDEOS (location, imagePreview) values ("${videoPathname}", "${imagePreviewPathname}")`,
+        `insert into VIDEOS (location, imagePreview) values ("${videoPathname}", "${imagePreviewPathname}.png")`,
         (error, sqlResult) => {
             return res.status(201).send(sqlResult.insertId + "");
         }
     );
-}
-
-// Just for testing!!!
-exports.upload_test = (req, res) => {
-    mysql.connection.query(`insert into VIDEOS (location) values ("/var/test")`,
-        (error, sqlResult) => {
-            return res.status(201).send(sqlResult.insertId + "");
-        });
 }
 
 /**
@@ -153,10 +147,10 @@ exports.get_video = (req, res) => {
             videoData.title=video[0].title;
             videoData.description=video[0].description;
 	        videoData.course=video[0].course;
-	        videoData.imagePreview=video[0].imagePreview;
+	        videoData.imagePreview=base64_encode(video[0].imagePreview);
             mysql.connection.query(
                 `select * from USERS where uuid IN (select uuid from COURSES where id=${video[0].course})`, (error, users) => {
-			 videoData.owner=users[0].username;
+			        videoData.owner=users[0].username;
                 }
             );
             videoData.location=video[0].location;
@@ -239,3 +233,15 @@ exports.comment = (req, res) => {
 }
 
 // get info (param id) me devuelves title, description, userNameOwnerVideo, url
+
+
+
+
+
+// function to encode file data to base64 encoded string: imagePreviews
+function base64_encode(file) {
+    // read binary data
+    const bitmap = fs.readFileSync(file);
+    // convert binary data to base64 encoded string
+    return new Buffer.from(bitmap).toString('base64');
+}
