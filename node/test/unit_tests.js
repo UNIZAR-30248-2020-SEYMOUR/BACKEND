@@ -1170,6 +1170,8 @@ describe('Unit testing', () => {
                     }
                 )
                 .end(function(err, res) {
+                    console.log(err)
+                    console.log(res)
                     expect(res).to.have.status(200);
                     expect(res.body).to.have.property('id').to.be.equal(1);
                     expect(res.body).to.have.property('title').to.be.equal('test title');

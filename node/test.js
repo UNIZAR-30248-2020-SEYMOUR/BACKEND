@@ -15,10 +15,10 @@ app.use(cookieParser());
 app.use('', routerBackend)  // Without prefix
 app.use('/videos', express.static(__dirname + '/videos')); // Videos directory
 
-const API_IP_TEST = 'localhost'
+const API_IP_TEST = '0.0.0.0'
 const API_PORT_TEST = 3001
 
-app.listen(API_PORT_TEST, '0.0.0.0', function () {
+app.listen(API_PORT_TEST, API_IP_TEST, function () {
   console.log('Server listening at http://' + API_IP_TEST + ':' + API_PORT_TEST);
 });
 
