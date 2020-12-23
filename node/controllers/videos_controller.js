@@ -1,4 +1,5 @@
 const mysql = require('../database/mysql');
+const extractFrames = require('ffmpeg-extract-frames')
 
 /**
  * @api {post} /videos/upload Upload a video to a course
@@ -21,31 +22,41 @@ const mysql = require('../database/mysql');
  *       "error": "description"
  *     }
  */
-exports.upload = (req, res) => {
-    if(!req.files) {
+exports.upload = async (req, res) => {
+    if (!req.files) {
         return res.status(400).send({error: 'No video uploaded'});
     }
     if (!req.files.video) {
         return res.status(400).send({error: 'No video uploaded'});
     }
-    if(req.files.video.mimetype !== 'video/mp4') {
+    if (req.files.video.mimetype !== 'video/mp4') {
         return res.status(400).send({error: 'Video format must be video/mp4'});
     }
-    if(req.files.video.size > 200000000) {
+    if (req.files.video.size > 200000000) {
         return res.status(400).send({error: 'Video must not exceed 200 MiB'});
     }
-    let pathname = 'videos/' + new Date().getTime();
-    req.files.video.mv(pathname, function (err) {
-        if (err) {
-            return res.send().status(500);
+
+    let name = new Date().getTime()
+
+    // Storing video
+    let videoPathname = 'videos/' + name;
+    req.files.video.mv(videoPathname);
+
+    // Storing imagePreview
+    let imagePreviewPathname = 'imagePreview/' + name;
+    await extractFrames({
+        input: videoPathname,
+        output: imagePreviewPathname,
+        offsets: [0] // Extract first frame
+    })
+
+    // Storing the paths in the database
+    mysql.connection.query(
+        `insert into VIDEOS (location, imagePreview) values ("${videoPathname}", "${imagePreviewPathname}")`,
+        (error, sqlResult) => {
+            return res.status(201).send(sqlResult.insertId + "");
         }
-        mysql.connection.query(
-            `insert into VIDEOS (location) values ("${pathname}")`,
-            (error, sqlResult) => {
-                return res.status(201).send(sqlResult.insertId + "");
-            }
-        );
-    });
+    );
 }
 
 // Just for testing!!!
@@ -141,7 +152,8 @@ exports.get_video = (req, res) => {
             videoData.id=video[0].id;
             videoData.title=video[0].title;
             videoData.description=video[0].description;
-	    videoData.course=video[0].course;
+	        videoData.course=video[0].course;
+	        videoData.imagePreview=video[0].imagePreview;
             mysql.connection.query(
                 `select * from USERS where uuid IN (select uuid from COURSES where id=${video[0].course})`, (error, users) => {
 			 videoData.owner=users[0].username;

@@ -38,6 +38,7 @@ CREATE TABLE VIDEOS (
   description varchar(255),
   course int REFERENCES COURSES(id),
   location varchar(255),
+  imagePreview varchar(255),
   PRIMARY KEY(id),
   numberOfRates int DEFAULT 0,
   sumOfRates int DEFAULT 0,

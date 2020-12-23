@@ -227,6 +227,7 @@ exports.get_videos = (req, res) => {
                         videoData.name = currentVideo.title;
                         videoData.description = currentVideo.description;
                         videoData.rate = currentVideo.rate;
+                        videoData.imagePreview = currentVideo.imagePreview;
                         responseData.push(videoData);
                     }
                     return res.status(200).send(responseData);

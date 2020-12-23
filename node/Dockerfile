@@ -1,4 +1,4 @@
-FROM node:12
+FROM dkarchmervue/fluent-ffmpeg
 
 RUN npm install -g nodemon
 RUN npm install -g nyc
