@@ -419,6 +419,140 @@
   },
   {
     "type": "post",
+    "url": "/courses/subscribe",
+    "title": "Subscribe an user to a course",
+    "name": "Subscribe_to_course",
+    "group": "Course",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id_user",
+            "description": "<p>User UUID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id_course",
+            "description": "<p>Course id.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "optional": false,
+            "field": "204",
+            "description": "<p>OK.</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "500",
+            "description": "<p>Internal Server Error.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "409",
+            "description": "<p>User already subscribed to the course.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "400",
+            "description": "<p>User or course does not exist.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 500 Not Found\n{\n  \"error\": \"description\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "node/controllers/courses_controller.js",
+    "groupTitle": "Course"
+  },
+  {
+    "type": "post",
+    "url": "/courses/unsubscribe",
+    "title": "Unsubscribe an user to a course",
+    "name": "Unsubscribe_to_course",
+    "group": "Course",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id_user",
+            "description": "<p>User UUID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id_course",
+            "description": "<p>Course id.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "optional": false,
+            "field": "204",
+            "description": "<p>OK.</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "500",
+            "description": "<p>Internal Server Error.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 500 Not Found\n{\n  \"error\": \"description\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "node/controllers/courses_controller.js",
+    "groupTitle": "Course"
+  },
+  {
+    "type": "post",
     "url": "/courses/update_course",
     "title": "Update course info",
     "name": "Update_course_info",
@@ -1048,7 +1182,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"uuid\": 123456-123456-123456,\n}",
+          "content": "HTTP/1.1 200 OK\n{\n  \"UUID\": 123456-123456-123456,\n  \"username\" pepito-grillo\n}",
           "type": "json"
         }
       ]
