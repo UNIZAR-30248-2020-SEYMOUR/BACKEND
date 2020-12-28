@@ -296,7 +296,18 @@ exports.search = (req, res) => {
     );
 };
 
-
+exports.subscribe = (req, res) => {
+    mysql.connection.query(
+        `insert into SUBSCRIPTIONS (id_user, id_course) values ("${req.body.id_user}", "${req.body.id_course}")`, (error) => {
+            if (error) {
+                return res.status(500).send({error: error.sqlMessage});
+            }
+            else {
+                return res.status(500).send()
+            }
+        }
+    );
+};
 
 
 // function to encode file data to base64 encoded string: imagePreviews
