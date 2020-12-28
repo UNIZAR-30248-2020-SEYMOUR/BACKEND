@@ -304,7 +304,7 @@ exports.search = (req, res) => {
  * @apiParam {String} id_user User UUID.
  * @apiParam {String} id_course Course id.
  *
- * @apiSuccess 200 OK.
+ * @apiSuccess 204 OK.
  * @apiError 500 Internal Server Error.
  * @apiError 409 User already subscribed to the course.
  * @apiError 400 User or course does not exist.
@@ -334,12 +334,40 @@ exports.subscribe = (req, res) => {
                 }
             }
             else {
-                return res.status(200).send()
+                return res.status(204).send()
             }
         }
     );
 };
 
+/**
+ * @api {post} /courses/unsubscribe Unsubscribe an user to a course
+ * @apiName Unsubscribe to course
+ * @apiGroup Course
+ *
+ * @apiParam {String} id_user User UUID.
+ * @apiParam {String} id_course Course id.
+ *
+ * @apiSuccess 204 OK.
+ * @apiError 500 Internal Server Error.
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 500 Not Found
+ *     {
+ *       "error": "description"
+ *     }
+ */
+exports.unsubscribe = (req, res) => {
+    mysql.connection.query(
+        `delete from SUBSCRIPTIONS WHERE id_user="${req.body.id_user}" AND id_course="${req.body.id_course}"`, (error) => {
+            if (error) {
+                return res.status(500).send({error: error.sqlMessage});
+            }
+            else {
+                return res.status(204).send()
+            }
+        }
+    );
+};
 
 // function to encode file data to base64 encoded string: imagePreviews
 function base64_encode(file) {
