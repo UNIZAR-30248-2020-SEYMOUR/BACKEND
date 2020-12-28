@@ -69,9 +69,8 @@ CREATE TABLE SUBSCRIPTIONS (
   id_user varchar(36) NOT NULL,
   id_course int NOT NULL,
   PRIMARY KEY (id_user, id_course),
-  FOREIGN KEY (id_user) REFERENCES USERS(uuid),
-  FOREIGN KEY (id_course) REFERENCES COURSES(id)
-
+  FOREIGN KEY (id_user) REFERENCES USERS(uuid) ON DELETE CASCADE,
+  FOREIGN KEY (id_course) REFERENCES COURSES(id) ON DELETE CASCADE
 );
 
 DELIMITER $$
