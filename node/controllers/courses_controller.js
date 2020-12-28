@@ -296,14 +296,45 @@ exports.search = (req, res) => {
     );
 };
 
+/**
+ * @api {post} /courses/subscribe Subscribe an user to a course
+ * @apiName Subscribe to course
+ * @apiGroup Course
+ *
+ * @apiParam {String} id_user User UUID.
+ * @apiParam {String} id_course Course id.
+ *
+ * @apiSuccess 200 OK.
+ * @apiError 500 Internal Server Error.
+ * @apiError 409 User already subscribed to the course.
+ * @apiError 400 User or course does not exist.
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 500 Not Found
+ *     {
+ *       "error": "description"
+ *     }
+ */
 exports.subscribe = (req, res) => {
     mysql.connection.query(
         `insert into SUBSCRIPTIONS (id_user, id_course) values ("${req.body.id_user}", "${req.body.id_course}")`, (error) => {
             if (error) {
-                return res.status(500).send({error: error.sqlMessage});
+                if (error.code === 'ER_DUP_ENTRY') {
+                    return res.status(409).send({error: "User already subscribed to the course."});
+                }
+                else if (error.sqlMessage.includes("Cannot add or update a child row")) {
+                    if (error.sqlMessage.includes("id_user")) {
+                        return res.status(400).send({error: "User does not exist."});
+                    }
+                    else {
+                        return res.status(400).send({error: "Course does not exist."});
+                    }
+                }
+                else {
+                    return res.status(500).send();
+                }
             }
             else {
-                return res.status(500).send()
+                return res.status(200).send()
             }
         }
     );

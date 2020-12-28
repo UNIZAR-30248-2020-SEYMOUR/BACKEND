@@ -66,9 +66,12 @@ CREATE TABLE USER_COMMENTS (
 );
 
 CREATE TABLE SUBSCRIPTIONS (
-  id_user varchar(36) NOT NULL REFERENCES USERS(uuid),
-  id_course int NOT NULL REFERENCES COURSES(id),
-  PRIMARY KEY (id_user, id_course)
+  id_user varchar(36) NOT NULL,
+  id_course int NOT NULL,
+  PRIMARY KEY (id_user, id_course),
+  FOREIGN KEY (id_user) REFERENCES USERS(uuid),
+  FOREIGN KEY (id_course) REFERENCES COURSES(id)
+
 );
 
 DELIMITER $$
