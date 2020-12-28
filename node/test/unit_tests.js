@@ -1244,6 +1244,91 @@ describe('Unit testing', () => {
         })
     });
 
+    describe('Successful Course Subscribe', () => {
+        it('Should subscribe the user to the course and return 204', (done) => {
+            chai.request(app)
+                .post('/courses/subscribe')
+                .send(
+                    {
+                        'id_user': UUID,
+                        'id_course' : 1
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(204);
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful Course Subscribe (Already subscribed)', () => {
+        it('Should not subscribe the user to the course and return 409 (already subscribed)', (done) => {
+            chai.request(app)
+                .post('/courses/subscribe')
+                .send(
+                    {
+                        'id_user': UUID,
+                        'id_course' : 1
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(409);
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful Course Subscribe (Invalid user)', () => {
+        it('Should not subscribe the user to the course and return 400 (user does not exist)', (done) => {
+            chai.request(app)
+                .post('/courses/subscribe')
+                .send(
+                    {
+                        'id_user': 'invaliduser',
+                        'id_course' : 1
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(400);
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful Course Subscribe (Invalid course)', () => {
+        it('Should not subscribe the user to the course and return 400 (course does not exist)', (done) => {
+            chai.request(app)
+                .post('/courses/subscribe')
+                .send(
+                    {
+                        'id_user': UUID,
+                        'id_course' : 99999
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(400);
+                    done();
+                })
+        })
+    });
+
+    describe('Successful Course Unsubscribe', () => {
+        it('Should unsubscribe the user from the course and return 204', (done) => {
+            chai.request(app)
+                .post('/courses/unsubscribe')
+                .send(
+                    {
+                        'id_user': UUID,
+                        'id_course' : 1
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(204);
+                    done();
+                })
+        })
+    });
+
     describe('Successful Delete Course', () => {
         it('Should delete the course and return 204', (done) => {
             chai.request(app)
