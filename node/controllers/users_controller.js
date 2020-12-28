@@ -69,7 +69,8 @@ exports.register = (req, res) => {
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
- *       "uuid": 123456-123456-123456,
+ *       "UUID": 123456-123456-123456,
+ *       "username" pepito-grillo
  *     }
  *
  * @apiError  403 Wrong e-mail or password.
@@ -88,7 +89,7 @@ exports.login = (req, res) => {
                 return res.status(403).send({error: 'Invalid email'});
             }
             if (bcrypt.compareSync(req.body.password, response_sql[0].password)) {
-                return res.status(200).send({UUID: response_sql[0].uuid});
+                return res.status(200).send({UUID: response_sql[0].uuid, username: response_sql[0].username});
             }
             return res.status(403).send({error: 'Invalid password'});
         }
