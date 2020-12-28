@@ -16,6 +16,7 @@ router.post('/users/delete', usersController.delete)
 router.post('/users/get_list', usersController.get_list)
 router.post('/users/update_profile', usersController.update_profile)
 router.post('/users/search', usersController.search)
+router.post('/users/feed', usersController.feed)
 
 
 // COURSES

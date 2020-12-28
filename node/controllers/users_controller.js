@@ -450,3 +450,50 @@ exports.search = (req, res) => {
         }
     );
 };
+
+
+/**
+ * @api {post} /users/feed
+ * @apiName Get feed of an user
+ * @apiGroup User
+ *
+ * @apiParam {Integer} uuid User id.
+ *
+ * @apiSuccess 200 Feed info retrieved.
+ * @apiError  404 User id does not exist.
+ * @apiError 500 Internal Server Error.
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "description"
+ *     }
+ */
+exports.feed = (req, res) => {
+    let responseData = {};
+
+    mysql.connection.query(
+        `SELECT videos.id, videos.title, videos.imagePreview, videos.description FROM VIDEOS videos
+            WHERE videos.course IN (SELECT subscriptions.id_course FROM SUBSCRIPTIONS subscriptions
+            WHERE id_user = "${req.body.uuid}") ORDER BY videos.id DESC LIMIT 20`, (error, response_sql) => {
+            
+            let responseData = [];
+            if (error) {
+                console.log(error);
+                return res.status(500).send({error: 'Internal server error'});
+            } 
+            
+            if (response_sql[0] === undefined) {
+                return res.status(404).send({error: 'User does not exist'});
+            }
+            
+            for (let i = 0; i < response_sql.length; ++i) {
+                let video = {};
+                video.id = response_sql[i].id;
+                video.title = response_sql[i].title;
+                video.description = response_sql[i].description;
+                video.imagePreview = response_sql[i].imagePreview;
+                responseData.push(video);
+            }
+            return res.status(200).send(responseData);
+    });
+};
