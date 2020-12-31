@@ -453,11 +453,13 @@ exports.search = (req, res) => {
 
 
 /**
- * @api {post} /users/feed
+ * @api {post} /users/feed Ged user feed
  * @apiName Get feed of an user
  * @apiGroup User
  *
  * @apiParam {Integer} uuid User id.
+ * @apiParam {Integer} first_video Start point.
+ * @apiParam {Integer} last_video End point.
  *
  * @apiSuccess 200 Feed info retrieved.
  * @apiError  404 User id does not exist.
@@ -474,7 +476,7 @@ exports.feed = (req, res) => {
     mysql.connection.query(
         `SELECT videos.id, videos.title, videos.imagePreview, videos.description FROM VIDEOS videos
             WHERE videos.course IN (SELECT subscriptions.id_course FROM SUBSCRIPTIONS subscriptions
-            WHERE id_user = "${req.body.uuid}") ORDER BY videos.id DESC LIMIT 20`, (error, response_sql) => {
+            WHERE id_user = "${req.body.uuid}") ORDER BY videos.id DESC LIMIT "${req.body.first_video}", "${req.body.last_video}"`, (error, response_sql) => {
             
             let responseData = [];
             if (error) {
