@@ -695,7 +695,7 @@ define({ "api": [
   {
     "type": "post",
     "url": "/users/feed",
-    "title": "",
+    "title": "Ged user feed",
     "name": "Get_feed_of_an_user",
     "group": "User",
     "parameter": {
@@ -707,6 +707,20 @@ define({ "api": [
             "optional": false,
             "field": "uuid",
             "description": "<p>User id.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Integer",
+            "optional": false,
+            "field": "first_video",
+            "description": "<p>Start point.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Integer",
+            "optional": false,
+            "field": "last_video",
+            "description": "<p>End point.</p>"
           }
         ]
       }
