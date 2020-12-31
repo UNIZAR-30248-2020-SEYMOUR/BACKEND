@@ -694,6 +694,66 @@ define({ "api": [
   },
   {
     "type": "post",
+    "url": "/users/feed",
+    "title": "",
+    "name": "Get_feed_of_an_user",
+    "group": "User",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Integer",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>User id.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "optional": false,
+            "field": "200",
+            "description": "<p>Feed info retrieved.</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "404",
+            "description": "<p>User id does not exist.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "500",
+            "description": "<p>Internal Server Error.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Not Found\n{\n  \"error\": \"description\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "node/controllers/users_controller.js",
+    "groupTitle": "User"
+  },
+  {
+    "type": "post",
     "url": "/users/get_user",
     "title": "Get user info",
     "name": "Get_user_info",
