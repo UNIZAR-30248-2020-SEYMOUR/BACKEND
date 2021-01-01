@@ -501,3 +501,11 @@ exports.feed = (req, res) => {
             return res.status(200).send(responseData);
     });
 };
+
+// function to encode file data to base64 encoded string: imagePreviews
+function base64_encode(file) {
+    // read binary data
+    const bitmap = fs.readFileSync(file);
+    // convert binary data to base64 encoded string
+    return new Buffer.from(bitmap).toString('base64');
+}
