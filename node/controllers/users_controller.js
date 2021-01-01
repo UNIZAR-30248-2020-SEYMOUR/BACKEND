@@ -489,9 +489,6 @@ exports.feed = (req, res) => {
             if (error) {
                 return res.status(500).send({error: 'Internal server error'});
             } 
-            if (response_sql[0] === undefined) {
-                return res.status(404).send({error: 'User does not exist'});
-            }
             
             for (let i = 0; i < response_sql.length; ++i) {
                 let video = {};
