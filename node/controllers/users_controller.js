@@ -462,6 +462,15 @@ exports.search = (req, res) => {
  * @apiParam {Integer} last_video End point.
  *
  * @apiSuccess 200 Feed info retrieved.
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "id": "123456-123456-123456",
+ *       "title": "Example title",
+ *       "description": "My description",
+ *       "imagePreview": "../../test.jpg",
+ *       "course": "1"
+ *     }
  * @apiError  404 User id does not exist.
  * @apiError 500 Internal Server Error.
  * @apiErrorExample {json} Error-Response:
@@ -471,19 +480,15 @@ exports.search = (req, res) => {
  *     }
  */
 exports.feed = (req, res) => {
-    let responseData = {};
-
     mysql.connection.query(
-        `SELECT videos.id, videos.title, videos.imagePreview, videos.description FROM VIDEOS videos
+        `SELECT videos.id, videos.title, videos.imagePreview, videos.description, videos.course FROM VIDEOS videos
             WHERE videos.course IN (SELECT subscriptions.id_course FROM SUBSCRIPTIONS subscriptions
-            WHERE id_user = "${req.body.uuid}") ORDER BY videos.id DESC LIMIT "${req.body.first_video}", "${req.body.last_video}"`, (error, response_sql) => {
+            WHERE id_user = "${req.body.uuid}") ORDER BY videos.id DESC LIMIT ${req.body.firstVideo}, ${req.body.lastVideo}`, (error, response_sql) => {
             
             let responseData = [];
             if (error) {
-                console.log(error);
                 return res.status(500).send({error: 'Internal server error'});
             } 
-            
             if (response_sql[0] === undefined) {
                 return res.status(404).send({error: 'User does not exist'});
             }
@@ -494,6 +499,7 @@ exports.feed = (req, res) => {
                 video.title = response_sql[i].title;
                 video.description = response_sql[i].description;
                 video.imagePreview = response_sql[i].imagePreview;
+                video.course = response_sql[i].course;
                 responseData.push(video);
             }
             return res.status(200).send(responseData);

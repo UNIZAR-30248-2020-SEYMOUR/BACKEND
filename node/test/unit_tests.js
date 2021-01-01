@@ -922,7 +922,7 @@ describe('Unit testing', () => {
                     }
                 )
                 .end(function(err, res) {
-                    expect(res).to.have.status(200);
+                    expect(res).to.have.status(404);
                     //expect(res.body).to.have.property('id').to.be.equal(1);
                     //expect(res.body).to.have.property('title').to.be.equal('test title');
                     //expect(res.body).to.have.property('description').to.be.equal('this is just a video for testing');
