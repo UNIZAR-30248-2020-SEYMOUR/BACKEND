@@ -471,7 +471,6 @@ exports.search = (req, res) => {
  *       "imagePreview": "../../test.jpg",
  *       "course": "1"
  *     }
- * @apiError  404 User id does not exist.
  * @apiError 500 Internal Server Error.
  * @apiErrorExample {json} Error-Response:
  *     HTTP/1.1 404 Not Found
@@ -495,7 +494,7 @@ exports.feed = (req, res) => {
                 video.id = response_sql[i].id;
                 video.title = response_sql[i].title;
                 video.description = response_sql[i].description;
-                video.imagePreview = response_sql[i].imagePreview;
+                video.imagePreview = base64_encode(response_sql[i].imagePreview);
                 video.course = response_sql[i].course;
                 responseData.push(video);
             }
