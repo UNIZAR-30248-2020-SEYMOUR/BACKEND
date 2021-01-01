@@ -2,6 +2,8 @@ const mysql = require('../database/mysql');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('../controllers/email_controller');
 const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
+
 const RESET_PASSWORD_MASTERKEY = 'MasterKey1.'
 const bcrypt = require("bcryptjs")
 const saltRounds=10
