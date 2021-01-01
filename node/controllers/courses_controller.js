@@ -349,6 +349,11 @@ exports.subscribe = (req, res) => {
  * @apiParam {String} id_course Course id.
  *
  * @apiSuccess 204 OK.
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": "true"
+ *     }
  * @apiError 500 Internal Server Error.
  * @apiErrorExample {json} Error-Response:
  *     HTTP/1.1 500 Not Found
@@ -364,6 +369,42 @@ exports.unsubscribe = (req, res) => {
             }
             else {
                 return res.status(204).send()
+            }
+        }
+    );
+};
+
+/**
+ * @api {post} /courses/check_subscription Check if an user is subscribed to a course
+ * @apiName Check subscription
+ * @apiGroup Course
+ *
+ * @apiParam {String} id_user User UUID.
+ * @apiParam {String} id_course Course id.
+ *
+ * @apiSuccess 200 OK.
+ * @apiError 500 Internal Server Error.
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 500 Not Found
+ *     {
+ *       "error": "description"
+ *     }
+ */
+exports.check_subscription = (req, res) => {
+    mysql.connection.query(
+        `select * from SUBSCRIPTIONS WHERE id_user="${req.body.id_user}" AND id_course="${req.body.id_course}"`, (error, response_sql) => {
+            if (error) {
+                return res.status(500).send({error: error.sqlMessage});
+            }
+            else {
+                let response = {};
+                if (response_sql.length > 0) {
+                    response.status = "true";
+                }
+                else {
+                    response.status = "false";
+                }
+                return res.status(200).send(response);
             }
         }
     );
