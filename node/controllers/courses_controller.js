@@ -168,8 +168,12 @@ exports.get_info = (req, res) => {
   let responseData = {};
 
   mysql.connection.query(
-    `SELECT course.coursename, course.description, course.owner, cat.name, cat.imageUrl, course.rate FROM COURSES course, CATEGORIES cat 
-            WHERE course.id = "${req.body.id}" AND course.category = cat.name`, (error, response_sql) => {
+    `SELECT course.coursename, course.description, user.username, cat.name, cat.imageUrl, course.rate 
+	 FROM COURSES course
+	 INNER JOIN CATEGORIES cat ON course.category = cat.name
+	 INNER JOIN USERS user ON course.owner = user.uuid
+	 WHERE course.id = "${req.body.id}" 
+	 AND course.category = cat.name`, (error, response_sql) => {
 
       if (response_sql[0] === undefined) {
         return res.status(404).send({error: 'Course does not exist'});
@@ -179,7 +183,7 @@ exports.get_info = (req, res) => {
       responseData.name = courseData.coursename;
       responseData.description = courseData.description;
       responseData.rate = courseData.rate;
-      responseData.ownername = courseData.owner;
+      responseData.ownername = courseData.username;
 
       let category = {};
       category.name = courseData.name;
