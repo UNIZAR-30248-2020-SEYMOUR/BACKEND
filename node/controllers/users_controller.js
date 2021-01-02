@@ -85,7 +85,7 @@ exports.register = (req, res) => {
  */
 exports.login = (req, res) => {
     mysql.connection.query(
-        `select password, uuid from USERS where email = "${req.body.email}"`,
+        `select password, uuid, username from USERS where email = "${req.body.email}"`,
         (error, response_sql) => {
             if (response_sql[0] === undefined) {
                 return res.status(403).send({error: 'Invalid email'});
