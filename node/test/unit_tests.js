@@ -877,7 +877,6 @@ describe('Unit testing', () => {
         })
     });
 
-    
     describe('Unsuccessful Upload a Video (No content)', () => {
         it('Should NOT upload a video and return 400', (done) => {
             chai.request(app)
@@ -891,7 +890,6 @@ describe('Unit testing', () => {
                 })
         })
     });
-
 
     describe('Successful Assign details to an uploaded video', () => {
         it('Should assign details to an video and return 201', (done) => {
@@ -911,7 +909,43 @@ describe('Unit testing', () => {
                 })
         })
     });
-    
+
+    describe('Successful get Feed of a Course', () => {
+        it('Should retrieve the feed of the user and return 200', (done) => {
+            chai.request(app)
+                .post('/users/feed')
+                .send(
+                    {
+                        'uuid': UUID,
+                        'firstVideo' : 0,
+                        'lastVideo' : 1
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(200);
+                    done();
+                })
+        })
+    });
+
+    describe('Unsuccessful get Feed of a Course (invalid arguments)', () => {
+        it('Should return 500', (done) => {
+            chai.request(app)
+                .post('/users/feed')
+                .send(
+                    {
+                        'uuid': UUID,
+                        'firstVideo' : -3,
+                        'lastVideo' : -8
+                    }
+                )
+                .end(function(err, res) {
+                    expect(res).to.have.status(500);
+                    done();
+                })
+        })
+    });
+
     describe('Successful get one video information', () => {
         it('Should get the video and return 200', (done) => {
             chai.request(app)
