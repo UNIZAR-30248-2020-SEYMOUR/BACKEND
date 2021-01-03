@@ -460,8 +460,8 @@ exports.search = (req, res) => {
  * @apiGroup User
  *
  * @apiParam {Integer} uuid User id.
- * @apiParam {Integer} first_video Start point.
- * @apiParam {Integer} last_video End point.
+ * @apiParam {Integer} firstVideo Start point.
+ * @apiParam {Integer} lastVideo End point.
  *
  * @apiSuccess 200 Feed info retrieved.
  * @apiSuccessExample {json} Success-Response:
