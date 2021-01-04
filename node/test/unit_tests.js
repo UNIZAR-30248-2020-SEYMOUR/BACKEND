@@ -307,6 +307,45 @@ describe('Unit testing', () => {
         })
     });
 
+    describe('Unsuccessful Create Course (Long description)', () => {
+      it('Should NOT register the course for the given user and return 400', (done) => {
+        chai.request(app)
+          .post('/courses/create_course')
+          .send(
+            {
+              'coursename': 'test course',
+              'description': 'this is a description for a test coursethis is a description for a test coursethis is a description for a test coursethis is a description for a test coursethis is a description for a test coursethis is a description for a test coursethis is a description for a test coursethis is a description for a test coursethis is a description for a test coursethis is a description for a test coursethis is a description for a test coursethis is a description for a test course',
+              'owner': UUID,
+              'category': 'Marketing'
+            }
+          )
+          .end(function(err, res) {
+            expect(res).to.have.status(400);
+            done();
+          })
+      })
+    });
+
+
+    describe('Unsuccessful Create Course (Long coursename)', () => {
+      it('Should NOT register the course for the given user and return 400', (done) => {
+        chai.request(app)
+          .post('/courses/create_course')
+          .send(
+            {
+              'coursename': 'test coursetest coursetest coursetest coursetest coursetest coursetest course',
+              'description': 'this is a description for a test course',
+              'owner': UUID,
+              'category': 'Marketing'
+            }
+          )
+          .end(function(err, res) {
+            expect(res).to.have.status(400);
+            done();
+          })
+      })
+    });
+
     describe('Successful Get Information of a course', () => {
         it('Should get the information of a course and return 200', (done) => {
             chai.request(app)
@@ -384,44 +423,6 @@ describe('Unit testing', () => {
                 .end(function(err, res) {
                     expect(res).to.have.status(200);
                     expect(res.body).to.have.length(1);
-                    done();
-                })
-        })
-    });
-
-    describe('Unsuccessful Create Course: invalid coursename', () => {
-        it('Should NOT register the course and return 500', (done) => {
-            chai.request(app)
-                .post('/courses/create_course')
-                .send(
-                    {
-                        'coursename': 'LONGLONGLONGLONGLONGLONGLONGLONGLONGLONGL',
-                        'description': 'this is a description for a test course',
-                        'owner': UUID,
-                        'category': 'Marketing'
-                    }
-                )
-                .end(function(err, res) {
-                    expect(res).to.have.status(500);
-                    done();
-                })
-        })
-    });
-
-    describe('Unsuccessful Create Course: invalid description', () => {
-        it('Should NOT register the course and return 500', (done) => {
-            chai.request(app)
-                .post('/courses/create_course')
-                .send(
-                    {
-                        'coursename': 'test course',
-                        'description': 'LONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONGLONG',
-                        'owner': UUID,
-                        'category': 'Marketing'
-                    }
-                )
-                .end(function(err, res) {
-                    expect(res).to.have.status(500);
                     done();
                 })
         })
@@ -1008,7 +1009,7 @@ describe('Unit testing', () => {
     });
 
     describe('Unsuccessful Assign details to an uploaded video (Params too long)', () => {
-        it('Should NOT assign details to an video and return 500', (done) => {
+        it('Should NOT assign details to a video and return 500', (done) => {
             chai.request(app)
                 .post('/videos/details')
                 .send(
@@ -1216,8 +1217,6 @@ describe('Unit testing', () => {
                 })
         })
     });
-
-    
 
     describe('Unsuccessful get one video information', () => {
         it('Should NOT get the video and return 404', (done) => {

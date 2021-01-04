@@ -50,15 +50,19 @@ exports.upload = (req, res) => {
         input: videoPathname,
         output: imagePreviewPathname,
         offsets: [0] // Extract first frame
-    }).then()
-
-    // Storing the paths in the database
-    mysql.connection.query(
-        `insert into VIDEOS (location, imagePreview) values ("${videoPathname}", "${imagePreviewPathname}.png")`,
-        (error, sqlResult) => {
+    })
+      .then(function () {
+        // Storing the paths in the database
+        mysql.connection.query(
+          `insert into VIDEOS (location, imagePreview) values ("${videoPathname}", "${imagePreviewPathname}.png")`,
+          (error, sqlResult) => {
             return res.status(201).send(sqlResult.insertId + "");
-        }
-    );
+          }
+        );
+      })
+      .catch(function (reason) {
+        return res.status(400).send();
+      });
 }
 
 /**

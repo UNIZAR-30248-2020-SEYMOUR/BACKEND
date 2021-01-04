@@ -13,7 +13,8 @@ const fs = require('fs');
  * @apiParam {String} category Course category.
  *
  * @apiSuccess 200 OK.
- * @apiError  403 Owner or category does not exists
+ * @apiError 400 Coursename or descriptions are very long.
+ * @apiError 403 Owner or category does not exists
  * @apiError 500 Internal Server Error.
  * @apiErrorExample {json} Error-Response:
  *     HTTP/1.1 403 Not Found
@@ -22,6 +23,13 @@ const fs = require('fs');
  *     }
  */
 exports.create_course = (req, res) => {
+    if (req.body.coursename.length >= 40) {
+      return res.status(400).send();
+    }
+    if (req.body.description.length >= 255) {
+      return res.status(400).send();
+    }
+
     mysql.connection.query(
         `select * from USERS where uuid = "${req.body.owner}"`, (error, response_sql) => {
             if (response_sql[0] === undefined) {
