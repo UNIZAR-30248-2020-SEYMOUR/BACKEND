@@ -42,6 +42,67 @@
   },
   {
     "type": "post",
+    "url": "/courses/check_subscription",
+    "title": "Check if an user is subscribed to a course",
+    "name": "Check_subscription",
+    "group": "Course",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id_user",
+            "description": "<p>User UUID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id_course",
+            "description": "<p>Course id.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "optional": false,
+            "field": "200",
+            "description": "<p>OK.</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "500",
+            "description": "<p>Internal Server Error.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 500 Not Found\n{\n  \"error\": \"description\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "node/controllers/courses_controller.js",
+    "groupTitle": "Course"
+  },
+  {
+    "type": "post",
     "url": "/courses/create_course",
     "title": "Create a course",
     "name": "Create_a_course",
@@ -95,6 +156,12 @@
     "error": {
       "fields": {
         "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "400",
+            "description": "<p>Coursename or descriptions are very long.</p>"
+          },
           {
             "group": "Error 4xx",
             "optional": false,
@@ -526,7 +593,14 @@
             "description": "<p>OK.</p>"
           }
         ]
-      }
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"status\": \"true\"\n}",
+          "type": "json"
+        }
+      ]
     },
     "error": {
       "fields": {
@@ -712,14 +786,14 @@
             "group": "Parameter",
             "type": "Integer",
             "optional": false,
-            "field": "first_video",
+            "field": "firstVideo",
             "description": "<p>Start point.</p>"
           },
           {
             "group": "Parameter",
             "type": "Integer",
             "optional": false,
-            "field": "last_video",
+            "field": "lastVideo",
             "description": "<p>End point.</p>"
           }
         ]
@@ -735,17 +809,18 @@
             "description": "<p>Feed info retrieved.</p>"
           }
         ]
-      }
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"id\": \"123456-123456-123456\",\n  \"title\": \"Example title\",\n  \"description\": \"My description\",\n  \"imagePreview\": \"../../test.jpg\",\n  \"course\": \"1\"\n}",
+          "type": "json"
+        }
+      ]
     },
     "error": {
       "fields": {
         "Error 4xx": [
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "404",
-            "description": "<p>User id does not exist.</p>"
-          },
           {
             "group": "Error 4xx",
             "optional": false,
